@@ -28,7 +28,6 @@
       --accent-blue: #2563eb;
       --accent-blue-light: #eff6ff;
       --danger: #dc2626;
-      --danger-light: #fef2f2;
       --danger-hover: #b91c1c;
       --success: #059669;
       --success-light: #ecfdf5;
@@ -87,13 +86,14 @@
     }
 
     .brand-logo {
-      width: 36px;
-      height: 36px;
+      width: 38px;
+      height: 38px;
       object-fit: contain;
       border-radius: 8px;
       background: var(--bg-subtle);
       padding: 4px;
       border: 1px solid var(--border-color);
+      flex-shrink: 0;
     }
 
     .brand-info {
@@ -117,9 +117,8 @@
     .version-badge {
       font-size: 0.6875rem;
       font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      padding: 0.125rem 0.45rem;
+      letter-spacing: 0.03em;
+      padding: 0.125rem 0.5rem;
       border-radius: 999px;
       background: var(--bg-subtle);
       color: var(--text-secondary);
@@ -135,7 +134,7 @@
     .header-controls {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.625rem;
       flex-wrap: wrap;
     }
 
@@ -144,21 +143,23 @@
       align-items: center;
       background: var(--bg-subtle);
       border: 1px solid var(--border-color);
-      border-radius: var(--radius-md);
-      padding: 0.375rem 0.75rem;
-      gap: 1rem;
+      border-radius: var(--radius-sm);
+      height: 38px;
+      padding: 0 0.875rem;
+      gap: 0.875rem;
     }
 
     .stat-item {
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 0.4rem;
     }
 
-    .stat-item i {
+    .stat-item svg {
       width: 15px;
       height: 15px;
       color: var(--text-secondary);
+      flex-shrink: 0;
     }
 
     .stat-label {
@@ -180,28 +181,31 @@
       background: var(--border-color);
     }
 
-    /* Buttons */
+    /* Buttons - Strictly Aligned Heights & Icons */
     .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 0.45rem;
+      height: 38px;
       font-family: inherit;
       font-size: 0.8125rem;
       font-weight: 600;
-      padding: 0.5rem 0.9rem;
+      padding: 0 0.95rem;
       border-radius: var(--radius-sm);
       border: 1px solid transparent;
       cursor: pointer;
       transition: all var(--transition-fast);
       white-space: nowrap;
       user-select: none;
+      line-height: 1;
     }
 
-    .btn i {
+    .btn svg {
       width: 16px;
       height: 16px;
       stroke-width: 2;
+      flex-shrink: 0;
     }
 
     .btn-primary {
@@ -237,28 +241,29 @@
       border-color: #6ee7b7;
     }
 
+    /* Solid Red Delete Buttons with White Text & White Icons */
     .btn-danger {
       background: var(--danger);
       color: #ffffff;
+      border-color: var(--danger);
     }
 
     .btn-danger:hover {
       background: var(--danger-hover);
+      border-color: var(--danger-hover);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
     }
 
-    .btn-danger-outline {
-      background: var(--danger-light);
-      color: var(--danger);
-      border-color: #fecaca;
+    .btn-danger svg {
+      color: #ffffff;
     }
 
-    .btn-danger-outline:hover {
-      background: #fee2e2;
-      border-color: #fca5a5;
-    }
-
+    /* Icon-only Buttons */
     .btn-icon {
-      padding: 0.4rem;
+      width: 32px;
+      height: 32px;
+      padding: 0;
       border-radius: var(--radius-sm);
       background: transparent;
       border: 1px solid transparent;
@@ -268,6 +273,12 @@
       align-items: center;
       justify-content: center;
       transition: all var(--transition-fast);
+      flex-shrink: 0;
+    }
+
+    .btn-icon svg {
+      width: 16px;
+      height: 16px;
     }
 
     .btn-icon:hover {
@@ -275,9 +286,32 @@
       color: var(--text-primary);
     }
 
-    .btn-icon.danger:hover {
-      background: var(--danger-light);
-      color: var(--danger);
+    /* Solid Red Small Delete Icon Button */
+    .btn-icon-danger {
+      width: 30px;
+      height: 30px;
+      padding: 0;
+      border-radius: 6px;
+      background: var(--danger);
+      border: 1px solid var(--danger);
+      color: #ffffff;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--transition-fast);
+      flex-shrink: 0;
+    }
+
+    .btn-icon-danger svg {
+      width: 14px;
+      height: 14px;
+      color: #ffffff;
+    }
+
+    .btn-icon-danger:hover {
+      background: var(--danger-hover);
+      border-color: var(--danger-hover);
     }
 
     /* Main Content Area */
@@ -294,58 +328,52 @@
       background: var(--bg-surface);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-md);
-      padding: 1rem 1.25rem;
-      margin-bottom: 1.5rem;
+      padding: 0.75rem 1rem;
+      margin-bottom: 1.25rem;
       box-shadow: var(--shadow-sm);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .event-meta-fields {
-      display: flex;
-      align-items: center;
-      gap: 1.25rem;
-      flex-wrap: wrap;
-      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
     }
 
     .meta-input-group {
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 0 0.75rem;
+      height: 38px;
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast);
     }
 
-    .meta-input-group i {
-      width: 16px;
-      height: 16px;
+    .meta-input-group:focus-within {
+      background: var(--bg-surface);
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+    }
+
+    .meta-input-group svg {
+      width: 15px;
+      height: 15px;
       color: var(--text-muted);
+      flex-shrink: 0;
     }
 
     .meta-input {
-      border: 1px solid transparent;
+      border: none;
       background: transparent;
       font-family: inherit;
-      font-size: 0.875rem;
+      font-size: 0.8125rem;
       font-weight: 600;
       color: var(--text-primary);
-      padding: 0.25rem 0.5rem;
-      border-radius: 6px;
-      transition: all var(--transition-fast);
-      min-width: 180px;
-    }
-
-    .meta-input:hover {
-      background: var(--bg-subtle);
+      width: 100%;
+      height: 100%;
     }
 
     .meta-input:focus {
       outline: none;
-      background: var(--bg-surface);
-      border-color: var(--border-focus);
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
     }
 
     .meta-input::placeholder {
@@ -353,62 +381,72 @@
       font-weight: 400;
     }
 
-    /* Toolbar: Search & Filter */
+    /* Toolbar: Search & Delete All Properly Aligned in One Line */
     .toolbar {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 0.75rem;
       margin-bottom: 1.25rem;
-      flex-wrap: wrap;
     }
 
     .search-box {
-      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
       flex: 1;
-      min-width: 240px;
-      max-width: 400px;
+      max-width: 420px;
+      height: 38px;
+      padding: 0 0.85rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-sm);
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
     }
 
-    .search-box i {
-      position: absolute;
-      left: 0.75rem;
-      top: 50%;
-      transform: translateY(-50%);
+    .search-box:focus-within {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+    }
+
+    .search-box svg {
       width: 16px;
       height: 16px;
       color: var(--text-muted);
-      pointer-events: none;
+      flex-shrink: 0;
     }
 
     .search-input {
-      width: 100%;
-      padding: 0.525rem 0.75rem 0.525rem 2.25rem;
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-sm);
-      background: var(--bg-surface);
+      flex: 1;
+      height: 100%;
+      border: none;
+      background: transparent;
       font-family: inherit;
       font-size: 0.875rem;
       color: var(--text-primary);
-      transition: all var(--transition-fast);
+      min-width: 0;
     }
 
     .search-input:focus {
       outline: none;
-      border-color: var(--border-focus);
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+    }
+
+    .search-input::placeholder {
+      color: var(--text-muted);
     }
 
     .toolbar-actions {
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      flex-shrink: 0;
     }
 
     /* Compact Group Tiles Grid */
     .tiles-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
       gap: 0.875rem;
     }
 
@@ -416,7 +454,7 @@
       background: var(--bg-surface);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-md);
-      padding: 0.875rem 1rem;
+      padding: 0.85rem 1rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -466,7 +504,7 @@
       min-width: 24px;
       height: 24px;
       border-radius: 6px;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
@@ -496,6 +534,7 @@
       border-radius: 999px;
       font-variant-numeric: tabular-nums;
       letter-spacing: 0.01em;
+      line-height: 1.2;
     }
 
     .pax-pill.zero {
@@ -515,6 +554,7 @@
       height: 16px;
       color: var(--text-muted);
       transition: transform var(--transition-fast), color var(--transition-fast);
+      flex-shrink: 0;
     }
 
     .group-tile:hover .tile-chevron {
@@ -545,7 +585,7 @@
       margin-bottom: 1rem;
     }
 
-    .empty-icon-wrap i {
+    .empty-icon-wrap svg {
       width: 24px;
       height: 24px;
     }
@@ -590,7 +630,7 @@
       border: 1px solid var(--border-color);
       border-radius: var(--radius-lg);
       width: 100%;
-      max-width: 560px;
+      max-width: 520px;
       max-height: 90vh;
       display: flex;
       flex-direction: column;
@@ -611,7 +651,7 @@
     }
 
     .modal-header {
-      padding: 1.125rem 1.25rem;
+      padding: 1rem 1.25rem;
       border-bottom: 1px solid var(--border-color);
       display: flex;
       align-items: center;
@@ -623,7 +663,7 @@
     .modal-title-group {
       display: flex;
       align-items: center;
-      gap: 0.6rem;
+      gap: 0.65rem;
       min-width: 0;
     }
 
@@ -656,26 +696,26 @@
       align-items: center;
       justify-content: space-between;
       gap: 0.75rem;
-      flex-wrap: wrap;
     }
 
     /* Guest Member List inside Modal */
     .drag-hint {
       display: flex;
       align-items: center;
-      gap: 0.45rem;
+      gap: 0.5rem;
       font-size: 0.75rem;
       color: var(--text-secondary);
       background: var(--bg-subtle);
-      padding: 0.5rem 0.75rem;
+      padding: 0.55rem 0.75rem;
       border-radius: var(--radius-sm);
-      margin-bottom: 1rem;
+      margin-bottom: 0.875rem;
       border: 1px solid var(--border-color);
+      line-height: 1.4;
     }
 
-    .drag-hint i {
-      width: 14px;
-      height: 14px;
+    .drag-hint svg {
+      width: 15px;
+      height: 15px;
       color: var(--accent-blue);
       flex-shrink: 0;
     }
@@ -693,7 +733,8 @@
       background: var(--bg-surface);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-sm);
-      padding: 0.6rem 0.75rem;
+      padding: 0.5rem 0.75rem;
+      min-height: 46px;
       transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast), background-color var(--transition-fast);
     }
 
@@ -716,11 +757,14 @@
     .drag-handle {
       cursor: grab;
       color: var(--text-muted);
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      padding: 0.25rem;
+      justify-content: center;
+      width: 24px;
+      height: 28px;
       border-radius: 4px;
       touch-action: none;
+      flex-shrink: 0;
     }
 
     .drag-handle:hover {
@@ -732,7 +776,7 @@
       cursor: grabbing;
     }
 
-    .drag-handle i {
+    .drag-handle svg {
       width: 16px;
       height: 16px;
     }
@@ -740,15 +784,16 @@
     .member-rank {
       font-size: 0.75rem;
       font-weight: 700;
-      min-width: 22px;
+      width: 22px;
       height: 22px;
       border-radius: 999px;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
       background: var(--bg-subtle);
       color: var(--text-secondary);
       flex-shrink: 0;
+      font-variant-numeric: tabular-nums;
     }
 
     .member-row.is-head .member-rank {
@@ -759,19 +804,45 @@
     .member-info {
       flex: 1;
       min-width: 0;
-    }
-
-    .member-name-line {
       display: flex;
       align-items: center;
-      gap: 0.45rem;
-      flex-wrap: wrap;
+      gap: 0.5rem;
     }
 
-    .member-name {
+    .member-name-tap {
       font-size: 0.875rem;
       font-weight: 600;
       color: var(--text-primary);
+      cursor: pointer;
+      padding: 0.25rem 0.45rem;
+      border-radius: 6px;
+      transition: background-color var(--transition-fast), color var(--transition-fast);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .member-name-tap:hover {
+      background: var(--bg-subtle);
+      color: var(--accent-blue);
+    }
+
+    .inline-edit-input {
+      width: 100%;
+      height: 32px;
+      padding: 0 0.55rem;
+      font-family: inherit;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-focus);
+      border-radius: 6px;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.14);
+    }
+
+    .inline-edit-input:focus {
+      outline: none;
     }
 
     .head-badge {
@@ -779,27 +850,19 @@
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.04em;
-      padding: 0.1rem 0.4rem;
+      padding: 0.15rem 0.45rem;
       border-radius: 4px;
       background: var(--accent-blue-light);
       color: var(--accent-blue);
       border: 1px solid #bfdbfe;
-    }
-
-    .member-sub {
-      font-size: 0.75rem;
-      color: var(--text-secondary);
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      margin-top: 0.15rem;
-      flex-wrap: wrap;
+      flex-shrink: 0;
     }
 
     .member-actions {
       display: flex;
       align-items: center;
-      gap: 0.2rem;
+      gap: 0.35rem;
+      flex-shrink: 0;
     }
 
     .reorder-arrows {
@@ -809,13 +872,15 @@
     }
 
     .btn-arrow {
-      padding: 1px 3px;
+      width: 22px;
+      height: 15px;
+      padding: 0;
       border: none;
       background: transparent;
       color: var(--text-muted);
       cursor: pointer;
       border-radius: 3px;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
     }
@@ -830,60 +895,28 @@
       cursor: not-allowed;
     }
 
-    .btn-arrow i {
+    .btn-arrow svg {
       width: 13px;
       height: 13px;
     }
 
-    /* Inline Add / Edit Form inside Modal */
-    .member-form-box {
+    /* Inline Add Guest Row (Text box + Add Guest button right beside each other) */
+    .add-member-box {
       margin-top: 1rem;
       padding-top: 1rem;
       border-top: 1px solid var(--border-color);
     }
 
-    .form-section-title {
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      color: var(--text-secondary);
-      margin-bottom: 0.65rem;
+    .inline-add-row {
       display: flex;
       align-items: center;
-      gap: 0.4rem;
-    }
-
-    .form-section-title i {
-      width: 14px;
-      height: 14px;
-    }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.65rem;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-    }
-
-    .form-group.full {
-      grid-column: 1 / -1;
-    }
-
-    .form-label {
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--text-secondary);
+      gap: 0.5rem;
     }
 
     .form-control {
       width: 100%;
-      padding: 0.5rem 0.7rem;
+      height: 38px;
+      padding: 0 0.75rem;
       font-family: inherit;
       font-size: 0.875rem;
       color: var(--text-primary);
@@ -893,18 +926,35 @@
       transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
     }
 
+    textarea.form-control {
+      height: auto;
+      padding: 0.6rem 0.75rem;
+      line-height: 1.45;
+      resize: vertical;
+    }
+
     .form-control:focus {
       outline: none;
       border-color: var(--border-focus);
       box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
     }
 
-    .form-actions-row {
+    .form-stack {
       display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 0.5rem;
-      margin-top: 0.75rem;
+      flex-direction: column;
+      gap: 0.875rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .form-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-secondary);
     }
 
     /* Toast Notification */
@@ -933,10 +983,11 @@
       animation: toastIn 220ms cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .toast i {
+    .toast svg {
       width: 16px;
       height: 16px;
       color: #34d399;
+      flex-shrink: 0;
     }
 
     @keyframes toastIn {
@@ -951,6 +1002,12 @@
     }
 
     /* Responsive Adjustments */
+    @media (max-width: 768px) {
+      .event-header-card {
+        grid-template-columns: 1fr;
+      }
+    }
+
     @media (max-width: 640px) {
       .header-container {
         flex-direction: column;
@@ -964,10 +1021,6 @@
       .stats-bar {
         flex: 1;
         justify-content: space-around;
-      }
-
-      .form-grid {
-        grid-template-columns: 1fr;
       }
 
       .tiles-grid {
@@ -990,7 +1043,7 @@
         <div class="brand-info">
           <div class="brand-title-row">
             <span class="brand-title">Head Count</span>
-            <span class="version-badge">v1.0</span>
+            <span class="version-badge">v1.01</span>
           </div>
           <span class="brand-subtitle">Universal Wedding &amp; Event Guest Counter</span>
         </div>
@@ -1028,39 +1081,37 @@
   <main class="main-container">
     <!-- Event Header Details (Synced with Excel Export Header) -->
     <section class="event-header-card" aria-label="Event Details">
-      <div class="event-meta-fields">
-        <div class="meta-input-group">
-          <i data-lucide="bookmark"></i>
-          <input
-            type="text"
-            id="eventTitleInput"
-            class="meta-input"
-            placeholder="Event Title (e.g., Wedding Guest List)"
-            value="Wedding Guest List"
-          />
-        </div>
-        <div class="meta-input-group">
-          <i data-lucide="calendar"></i>
-          <input
-            type="text"
-            id="eventDateInput"
-            class="meta-input"
-            placeholder="Event Date / Venue"
-          />
-        </div>
-        <div class="meta-input-group">
-          <i data-lucide="user-check"></i>
-          <input
-            type="text"
-            id="eventHostInput"
-            class="meta-input"
-            placeholder="Host / Family Side"
-          />
-        </div>
+      <div class="meta-input-group">
+        <i data-lucide="bookmark"></i>
+        <input
+          type="text"
+          id="eventTitleInput"
+          class="meta-input"
+          placeholder="Event Title (e.g., Wedding Guest List)"
+          value="Wedding Guest List"
+        />
+      </div>
+      <div class="meta-input-group">
+        <i data-lucide="calendar"></i>
+        <input
+          type="text"
+          id="eventDateInput"
+          class="meta-input"
+          placeholder="Event Date / Venue"
+        />
+      </div>
+      <div class="meta-input-group">
+        <i data-lucide="user-check"></i>
+        <input
+          type="text"
+          id="eventHostInput"
+          class="meta-input"
+          placeholder="Host / Family Side"
+        />
       </div>
     </section>
 
-    <!-- Search & Quick Controls -->
+    <!-- Search & Delete All Toolbar (Aligned in One Line) -->
     <div class="toolbar">
       <div class="search-box">
         <i data-lucide="search"></i>
@@ -1074,7 +1125,7 @@
       </div>
 
       <div class="toolbar-actions">
-        <button type="button" class="btn btn-danger-outline" id="deleteAllGroupsBtn" style="display: none;">
+        <button type="button" class="btn btn-danger" id="deleteAllGroupsBtn" style="display: none;">
           <i data-lucide="trash-2"></i>
           <span>Delete All</span>
         </button>
@@ -1100,26 +1151,26 @@
     </div>
   </main>
 
-  <!-- Modal 1: Add New Group -->
+  <!-- Modal 1: Add New Group (Names Only) -->
   <div class="modal-backdrop" id="newGroupModal" role="dialog" aria-modal="true" aria-labelledby="newGroupModalTitle">
     <div class="modal-dialog">
       <div class="modal-header">
         <div class="modal-title-group">
-          <i data-lucide="folder-plus" style="width: 20px; height: 20px; color: var(--accent-blue);"></i>
+          <i data-lucide="folder-plus" style="width: 20px; height: 20px; color: var(--accent-blue); flex-shrink: 0;"></i>
           <div>
             <h3 class="modal-title" id="newGroupModalTitle">Create New Guest Group</h3>
-            <p class="modal-subtitle">First member becomes the primary tile name on the main screen</p>
+            <p class="modal-subtitle">First guest becomes the primary tile name on the main screen</p>
           </div>
         </div>
         <button type="button" class="btn-icon" data-close-modal="newGroupModal" aria-label="Close">
-          <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+          <i data-lucide="x"></i>
         </button>
       </div>
 
       <form id="newGroupForm">
         <div class="modal-body">
-          <div class="form-grid">
-            <div class="form-group full">
+          <div class="form-stack">
+            <div class="form-group">
               <label class="form-label" for="newPrimaryName">Primary Guest Name (Group Head) *</label>
               <input
                 type="text"
@@ -1132,30 +1183,8 @@
             </div>
 
             <div class="form-group">
-              <label class="form-label" for="newPrimaryRelation">Relation / Category</label>
-              <input
-                type="text"
-                id="newPrimaryRelation"
-                class="form-control"
-                placeholder="e.g., Family, Groom Side, VIP"
-                autocomplete="off"
-              />
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="newPrimaryPhone">Phone / Contact</label>
-              <input
-                type="text"
-                id="newPrimaryPhone"
-                class="form-control"
-                placeholder="Optional"
-                autocomplete="off"
-              />
-            </div>
-
-            <div class="form-group full">
               <label class="form-label" for="newAdditionalGuests">
-                Accompanying Guests (Optional — comma or new-line separated)
+                Accompanying Guest Names (Optional — comma or new-line separated)
               </label>
               <textarea
                 id="newAdditionalGuests"
@@ -1167,7 +1196,7 @@
           </div>
         </div>
 
-        <div class="modal-footer">
+        <div class="modal-footer" style="justify-content: flex-end;">
           <button type="button" class="btn btn-secondary" data-close-modal="newGroupModal">Cancel</button>
           <button type="submit" class="btn btn-primary">
             <i data-lucide="check"></i>
@@ -1178,13 +1207,13 @@
     </div>
   </div>
 
-  <!-- Modal 2: Group Details, Sorting, Editing & Member Management -->
+  <!-- Modal 2: Group Details, Sorting, Tap-to-Edit Name & Inline Add Guest -->
   <div class="modal-backdrop" id="groupDetailModal" role="dialog" aria-modal="true" aria-labelledby="detailModalTitle">
     <div class="modal-dialog">
       <div class="modal-header">
         <div class="modal-title-group">
-          <i data-lucide="users" style="width: 20px; height: 20px; color: var(--accent-blue);"></i>
-          <div>
+          <i data-lucide="users" style="width: 20px; height: 20px; color: var(--accent-blue); flex-shrink: 0;"></i>
+          <div style="min-width: 0;">
             <div style="display: flex; align-items: center; gap: 0.5rem;">
               <h3 class="modal-title" id="detailModalTitle">Group Name</h3>
               <span class="pax-pill plus" id="detailModalPaxBadge">+0</span>
@@ -1193,79 +1222,40 @@
           </div>
         </div>
         <button type="button" class="btn-icon" data-close-modal="groupDetailModal" aria-label="Close">
-          <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+          <i data-lucide="x"></i>
         </button>
       </div>
 
       <div class="modal-body">
         <div class="drag-hint">
-          <i data-lucide="arrow-up-down"></i>
-          <span>Drag or use arrows to reorder. The top member (#1) automatically becomes the Group Name &amp; main tile title.</span>
+          <i data-lucide="info"></i>
+          <span>Tap any name to edit. Drag or use arrows to reorder — top guest (#1) sets the group tile name.</span>
         </div>
 
         <!-- Draggable Member List -->
         <div id="memberList" class="member-list"></div>
 
-        <!-- Add or Edit Member Form -->
-        <div class="member-form-box">
-          <div class="form-section-title" id="memberFormHeader">
-            <i data-lucide="user-plus"></i>
-            <span id="memberFormTitleText">Add Guest to Group</span>
-          </div>
-
-          <form id="memberForm">
-            <input type="hidden" id="editingMemberId" value="" />
-            <div class="form-grid">
-              <div class="form-group full">
-                <label class="form-label" for="memberNameInput">Guest Full Name *</label>
-                <input
-                  type="text"
-                  id="memberNameInput"
-                  class="form-control"
-                  placeholder="Enter guest name"
-                  required
-                  autocomplete="off"
-                />
-              </div>
-
-              <div class="form-group">
-                <label class="form-label" for="memberRelationInput">Relation / Note</label>
-                <input
-                  type="text"
-                  id="memberRelationInput"
-                  class="form-control"
-                  placeholder="e.g., Spouse, Child, Friend"
-                  autocomplete="off"
-                />
-              </div>
-
-              <div class="form-group">
-                <label class="form-label" for="memberPhoneInput">Phone / Contact</label>
-                <input
-                  type="text"
-                  id="memberPhoneInput"
-                  class="form-control"
-                  placeholder="Optional"
-                  autocomplete="off"
-                />
-              </div>
-            </div>
-
-            <div class="form-actions-row">
-              <button type="button" class="btn btn-secondary" id="cancelEditMemberBtn" style="display: none;">
-                Cancel Edit
-              </button>
-              <button type="submit" class="btn btn-primary" id="saveMemberBtn">
-                <i data-lucide="plus"></i>
-                <span id="saveMemberBtnText">Add Guest</span>
-              </button>
-            </div>
+        <!-- Inline Add Guest Form (Input + Button Right Beside Each Other) -->
+        <div class="add-member-box">
+          <form id="addMemberForm" class="inline-add-row">
+            <input
+              type="text"
+              id="newMemberNameInput"
+              class="form-control"
+              placeholder="Enter guest name..."
+              required
+              autocomplete="off"
+            />
+            <button type="submit" class="btn btn-primary" style="flex-shrink: 0;">
+              <i data-lucide="plus"></i>
+              <span>Add Guest</span>
+            </button>
           </form>
         </div>
       </div>
 
       <div class="modal-footer">
-        <button type="button" class="btn btn-danger-outline" id="deleteGroupTriggerBtn">
+        <button type="button" class="btn btn-danger" id="deleteGroupTriggerBtn">
           <i data-lucide="trash-2"></i>
           <span>Delete Group</span>
         </button>
@@ -1283,11 +1273,11 @@
     <div class="modal-dialog modal-sm">
       <div class="modal-header">
         <div class="modal-title-group">
-          <i data-lucide="alert-triangle" style="width: 20px; height: 20px; color: var(--danger);"></i>
+          <i data-lucide="alert-triangle" style="width: 20px; height: 20px; color: var(--danger); flex-shrink: 0;"></i>
           <h3 class="modal-title" id="confirmModalTitle">Confirm Deletion</h3>
         </div>
         <button type="button" class="btn-icon" data-close-modal="confirmModal" aria-label="Close">
-          <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+          <i data-lucide="x"></i>
         </button>
       </div>
 
@@ -1327,6 +1317,7 @@
       };
 
       let activeGroupId = null;
+      let inlineEditingMemberId = null;
       let pendingConfirmAction = null;
       let draggedMemberIndex = null;
 
@@ -1350,8 +1341,6 @@
         newGroupModal: document.getElementById('newGroupModal'),
         newGroupForm: document.getElementById('newGroupForm'),
         newPrimaryName: document.getElementById('newPrimaryName'),
-        newPrimaryRelation: document.getElementById('newPrimaryRelation'),
-        newPrimaryPhone: document.getElementById('newPrimaryPhone'),
         newAdditionalGuests: document.getElementById('newAdditionalGuests'),
         // Detail Modal
         groupDetailModal: document.getElementById('groupDetailModal'),
@@ -1359,14 +1348,8 @@
         detailModalPaxBadge: document.getElementById('detailModalPaxBadge'),
         detailModalSubtitle: document.getElementById('detailModalSubtitle'),
         memberList: document.getElementById('memberList'),
-        memberForm: document.getElementById('memberForm'),
-        memberFormTitleText: document.getElementById('memberFormTitleText'),
-        editingMemberId: document.getElementById('editingMemberId'),
-        memberNameInput: document.getElementById('memberNameInput'),
-        memberRelationInput: document.getElementById('memberRelationInput'),
-        memberPhoneInput: document.getElementById('memberPhoneInput'),
-        cancelEditMemberBtn: document.getElementById('cancelEditMemberBtn'),
-        saveMemberBtnText: document.getElementById('saveMemberBtnText'),
+        addMemberForm: document.getElementById('addMemberForm'),
+        newMemberNameInput: document.getElementById('newMemberNameInput'),
         deleteGroupTriggerBtn: document.getElementById('deleteGroupTriggerBtn'),
         // Confirm Modal
         confirmModal: document.getElementById('confirmModal'),
@@ -1430,7 +1413,7 @@
           toast.style.transform = 'translateY(8px)';
           toast.style.transition = 'all 200ms ease';
           setTimeout(() => toast.remove(), 220);
-        }, 2400);
+        }, 2200);
       }
 
       function escapeHtml(str) {
@@ -1473,12 +1456,7 @@
         const query = els.searchInput.value.trim().toLowerCase();
         const filteredGroups = state.groups.filter((group) => {
           if (!query) return true;
-          return group.members.some(
-            (m) =>
-              m.name.toLowerCase().includes(query) ||
-              (m.relation && m.relation.toLowerCase().includes(query)) ||
-              (m.phone && m.phone.toLowerCase().includes(query))
-          );
+          return group.members.some((m) => m.name.toLowerCase().includes(query));
         });
 
         els.tilesGrid.innerHTML = '';
@@ -1545,6 +1523,9 @@
       }
 
       function closeModal(modalEl) {
+        if (modalEl === els.groupDetailModal) {
+          inlineEditingMemberId = null;
+        }
         modalEl.classList.remove('open');
         const anyOpen = document.querySelectorAll('.modal-backdrop.open').length > 0;
         if (!anyOpen) {
@@ -1570,6 +1551,11 @@
 
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
+          if (inlineEditingMemberId) {
+            inlineEditingMemberId = null;
+            renderGroupDetailModal();
+            return;
+          }
           const openModals = Array.from(document.querySelectorAll('.modal-backdrop.open'));
           if (openModals.length > 0) {
             closeModal(openModals[openModals.length - 1]);
@@ -1587,22 +1573,18 @@
       els.openNewGroupModalBtn.addEventListener('click', triggerNewGroupModal);
       els.emptyAddBtn.addEventListener('click', triggerNewGroupModal);
 
-      // Handle Create New Group
+      // Handle Create New Group (Names Only)
       els.newGroupForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const primaryName = els.newPrimaryName.value.trim();
         if (!primaryName) return;
 
-        const relation = els.newPrimaryRelation.value.trim();
-        const phone = els.newPrimaryPhone.value.trim();
         const extraRaw = els.newAdditionalGuests.value;
 
         const members = [
           {
             id: uid('mem'),
-            name: primaryName,
-            relation: relation,
-            phone: phone
+            name: primaryName
           }
         ];
 
@@ -1615,9 +1597,7 @@
           extras.forEach((guestName) => {
             members.push({
               id: uid('mem'),
-              name: guestName,
-              relation: '',
-              phone: ''
+              name: guestName
             });
           });
         }
@@ -1636,12 +1616,13 @@
       // Open Group Detail Modal
       function openGroupDetail(groupId) {
         activeGroupId = groupId;
-        resetMemberForm();
+        inlineEditingMemberId = null;
+        els.addMemberForm.reset();
         renderGroupDetailModal();
         openModal(els.groupDetailModal);
       }
 
-      // Render Group Detail Modal (Syncs Header, Member Order, and Main Tile)
+      // Render Group Detail Modal (Tap-to-Edit Name + Drag/Arrow Reorder)
       function renderGroupDetailModal() {
         const group = state.groups.find((g) => g.id === activeGroupId);
         if (!group) {
@@ -1664,14 +1645,11 @@
 
         group.members.forEach((member, idx) => {
           const isHead = idx === 0;
+          const isEditing = inlineEditingMemberId === member.id;
           const row = document.createElement('div');
           row.className = `member-row ${isHead ? 'is-head' : ''}`;
-          row.setAttribute('draggable', 'true');
+          row.setAttribute('draggable', isEditing ? 'false' : 'true');
           row.dataset.index = idx;
-
-          const subParts = [];
-          if (member.relation) subParts.push(escapeHtml(member.relation));
-          if (member.phone) subParts.push(escapeHtml(member.phone));
 
           row.innerHTML = `
             <div class="drag-handle" title="Drag to reorder">
@@ -1679,11 +1657,12 @@
             </div>
             <span class="member-rank">${idx + 1}</span>
             <div class="member-info">
-              <div class="member-name-line">
-                <span class="member-name">${escapeHtml(member.name)}</span>
-                ${isHead ? '<span class="head-badge">Primary / Tile Head</span>' : ''}
-              </div>
-              ${subParts.length > 0 ? `<div class="member-sub">${subParts.join(' • ')}</div>` : ''}
+              ${
+                isEditing
+                  ? `<input type="text" class="inline-edit-input" value="${escapeHtml(member.name)}" aria-label="Edit guest name" />`
+                  : `<span class="member-name-tap" title="Tap to edit name">${escapeHtml(member.name)}</span>`
+              }
+              ${isHead && !isEditing ? '<span class="head-badge">Primary</span>' : ''}
             </div>
             <div class="member-actions">
               <div class="reorder-arrows">
@@ -1698,58 +1677,100 @@
                   <i data-lucide="chevron-down"></i>
                 </button>
               </div>
-              <button type="button" class="btn-icon" data-action="edit" title="Edit guest">
-                <i data-lucide="pencil" style="width: 15px; height: 15px;"></i>
-              </button>
-              <button type="button" class="btn-icon danger" data-action="delete" title="Remove guest">
-                <i data-lucide="trash-2" style="width: 15px; height: 15px;"></i>
+              <button type="button" class="btn-icon-danger" data-action="delete" title="Remove guest">
+                <i data-lucide="trash-2"></i>
               </button>
             </div>
           `;
+
+          // Tap-to-edit logic
+          if (isEditing) {
+            const inputEl = row.querySelector('.inline-edit-input');
+            let committed = false;
+
+            const commitEdit = () => {
+              if (committed) return;
+              committed = true;
+              const newName = inputEl.value.trim();
+              if (newName && newName !== member.name) {
+                member.name = newName;
+                saveState();
+                showToast(`Updated to "${newName}"`);
+              }
+              inlineEditingMemberId = null;
+              renderGroupDetailModal();
+              renderMain();
+            };
+
+            inputEl.addEventListener('keydown', (e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                commitEdit();
+              } else if (e.key === 'Escape') {
+                e.preventDefault();
+                e.stopPropagation();
+                committed = true;
+                inlineEditingMemberId = null;
+                renderGroupDetailModal();
+              }
+            });
+
+            inputEl.addEventListener('blur', commitEdit);
+
+            setTimeout(() => {
+              inputEl.focus();
+              inputEl.select();
+            }, 10);
+          } else {
+            const nameTapEl = row.querySelector('.member-name-tap');
+            nameTapEl.addEventListener('click', () => {
+              inlineEditingMemberId = member.id;
+              renderGroupDetailModal();
+            });
+          }
 
           // Arrow Button Reordering
           row.querySelector('[data-move="up"]').addEventListener('click', () => moveMember(idx, idx - 1));
           row.querySelector('[data-move="down"]').addEventListener('click', () => moveMember(idx, idx + 1));
 
-          // Edit Guest
-          row.querySelector('[data-action="edit"]').addEventListener('click', () => startEditMember(member));
-
           // Delete Guest
           row.querySelector('[data-action="delete"]').addEventListener('click', () => removeMember(member.id));
 
           // HTML5 Drag & Drop Events
-          row.addEventListener('dragstart', (e) => {
-            draggedMemberIndex = idx;
-            row.classList.add('dragging');
-            e.dataTransfer.effectAllowed = 'move';
-            e.dataTransfer.setData('text/plain', String(idx));
-          });
+          if (!isEditing) {
+            row.addEventListener('dragstart', (e) => {
+              draggedMemberIndex = idx;
+              row.classList.add('dragging');
+              e.dataTransfer.effectAllowed = 'move';
+              e.dataTransfer.setData('text/plain', String(idx));
+            });
 
-          row.addEventListener('dragend', () => {
-            draggedMemberIndex = null;
-            row.classList.remove('dragging');
-            document.querySelectorAll('.member-row').forEach((r) => r.classList.remove('drag-over'));
-          });
+            row.addEventListener('dragend', () => {
+              draggedMemberIndex = null;
+              row.classList.remove('dragging');
+              document.querySelectorAll('.member-row').forEach((r) => r.classList.remove('drag-over'));
+            });
 
-          row.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            e.dataTransfer.dropEffect = 'move';
-            if (draggedMemberIndex !== null && draggedMemberIndex !== idx) {
-              row.classList.add('drag-over');
-            }
-          });
+            row.addEventListener('dragover', (e) => {
+              e.preventDefault();
+              e.dataTransfer.dropEffect = 'move';
+              if (draggedMemberIndex !== null && draggedMemberIndex !== idx) {
+                row.classList.add('drag-over');
+              }
+            });
 
-          row.addEventListener('dragleave', () => {
-            row.classList.remove('drag-over');
-          });
+            row.addEventListener('dragleave', () => {
+              row.classList.remove('drag-over');
+            });
 
-          row.addEventListener('drop', (e) => {
-            e.preventDefault();
-            row.classList.remove('drag-over');
-            if (draggedMemberIndex !== null && draggedMemberIndex !== idx) {
-              moveMember(draggedMemberIndex, idx);
-            }
-          });
+            row.addEventListener('drop', (e) => {
+              e.preventDefault();
+              row.classList.remove('drag-over');
+              if (draggedMemberIndex !== null && draggedMemberIndex !== idx) {
+                moveMember(draggedMemberIndex, idx);
+              }
+            });
+          }
 
           els.memberList.appendChild(row);
         });
@@ -1763,6 +1784,7 @@
         if (!group) return;
         if (toIndex < 0 || toIndex >= group.members.length || fromIndex === toIndex) return;
 
+        inlineEditingMemberId = null;
         const oldHeadName = getGroupDisplayName(group);
         const [moved] = group.members.splice(fromIndex, 1);
         group.members.splice(toIndex, 0, moved);
@@ -1777,62 +1799,27 @@
         }
       }
 
-      // Add or Edit Member inside Group
-      function startEditMember(member) {
-        els.editingMemberId.value = member.id;
-        els.memberNameInput.value = member.name;
-        els.memberRelationInput.value = member.relation || '';
-        els.memberPhoneInput.value = member.phone || '';
-        els.memberFormTitleText.textContent = `Edit Guest: ${member.name}`;
-        els.saveMemberBtnText.textContent = 'Save Changes';
-        els.cancelEditMemberBtn.style.display = 'inline-flex';
-        els.memberNameInput.focus();
-      }
-
-      function resetMemberForm() {
-        els.editingMemberId.value = '';
-        els.memberForm.reset();
-        els.memberFormTitleText.textContent = 'Add Guest to Group';
-        els.saveMemberBtnText.textContent = 'Add Guest';
-        els.cancelEditMemberBtn.style.display = 'none';
-      }
-
-      els.cancelEditMemberBtn.addEventListener('click', resetMemberForm);
-
-      els.memberForm.addEventListener('submit', (e) => {
+      // Add Guest Inline
+      els.addMemberForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const group = state.groups.find((g) => g.id === activeGroupId);
         if (!group) return;
 
-        const name = els.memberNameInput.value.trim();
+        const name = els.newMemberNameInput.value.trim();
         if (!name) return;
 
-        const relation = els.memberRelationInput.value.trim();
-        const phone = els.memberPhoneInput.value.trim();
-        const editingId = els.editingMemberId.value;
+        inlineEditingMemberId = null;
+        group.members.push({
+          id: uid('mem'),
+          name
+        });
 
-        if (editingId) {
-          const member = group.members.find((m) => m.id === editingId);
-          if (member) {
-            member.name = name;
-            member.relation = relation;
-            member.phone = phone;
-            showToast(`Updated "${name}"`);
-          }
-        } else {
-          group.members.push({
-            id: uid('mem'),
-            name,
-            relation,
-            phone
-          });
-          showToast(`Added "${name}" to group`);
-        }
-
-        resetMemberForm();
+        els.newMemberNameInput.value = '';
         saveState();
         renderGroupDetailModal();
         renderMain();
+        showToast(`Added "${name}"`);
+        els.newMemberNameInput.focus();
       });
 
       // Remove Member from Group
@@ -1841,7 +1828,6 @@
         if (!group) return;
 
         if (group.members.length <= 1) {
-          // Removing the last member deletes the whole group with confirmation
           promptConfirmation(
             'Delete Entire Group?',
             `Removing the last guest "${group.members[0].name}" will delete this entire group tile. Continue?`,
@@ -1856,9 +1842,8 @@
 
         const removed = group.members.find((m) => m.id === memberId);
         group.members = group.members.filter((m) => m.id !== memberId);
-
-        if (els.editingMemberId.value === memberId) {
-          resetMemberForm();
+        if (inlineEditingMemberId === memberId) {
+          inlineEditingMemberId = null;
         }
 
         saveState();
@@ -1947,11 +1932,8 @@
       els.searchInput.addEventListener('input', renderMain);
 
       // Excel Export (.xlsx)
-      // Format requirement:
       // - Top of Excel sheet: Total Pax and all event details in header
-      // - Group-wise sections
-      // - 1 row gap between groups
-      // - Guest header row & guests listed below each group
+      // - Group-wise sections with 1 row gap & guest header + guest names below
       els.exportExcelBtn.addEventListener('click', () => {
         if (state.groups.length === 0) {
           showToast('Add at least one guest group before exporting');
@@ -1977,9 +1959,9 @@
         const rows = [];
 
         // Top Summary & Event Header Block
-        rows.push([eventTitle.toUpperCase(), '', '', '', '']);
-        rows.push(['TOTAL PAX', totalPax, 'TOTAL GROUPS', totalGroups, '']);
-        rows.push(['EVENT DATE / VENUE', eventDate, 'HOST / SIDE', eventHost, `Exported: ${exportedOn}`]);
+        rows.push([eventTitle.toUpperCase(), '', '', '']);
+        rows.push(['TOTAL PAX', totalPax, 'TOTAL GROUPS', totalGroups]);
+        rows.push(['EVENT DATE / VENUE', eventDate, 'HOST / SIDE', `${eventHost} (Exported: ${exportedOn})`]);
         rows.push([]); // 1 blank row after top header block
 
         // Group-Wise Sections with 1 Row Gap
@@ -1992,13 +1974,12 @@
           rows.push([
             `GROUP ${gIdx + 1}: ${groupHead} (+${plusCount})`,
             '',
-            '',
             'Group Pax:',
             groupTotal
           ]);
 
           // Guest Table Header Row
-          rows.push(['Sr. No.', 'Guest Name', 'Role', 'Relation / Note', 'Phone / Contact']);
+          rows.push(['Sr. No.', 'Guest Name', 'Role', 'Group Head']);
 
           // Guest Rows below Header
           group.members.forEach((member, mIdx) => {
@@ -2006,8 +1987,7 @@
               mIdx + 1,
               member.name,
               mIdx === 0 ? 'Group Head (Primary)' : 'Accompanying Guest',
-              member.relation || '-',
-              member.phone || '-'
+              groupHead
             ]);
           });
 
@@ -2017,13 +1997,11 @@
 
         const worksheet = XLSX.utils.aoa_to_sheet(rows);
 
-        // Set clean column widths for readability
         worksheet['!cols'] = [
           { wch: 16 },
-          { wch: 30 },
-          { wch: 22 },
+          { wch: 32 },
           { wch: 24 },
-          { wch: 20 }
+          { wch: 28 }
         ];
 
         const workbook = XLSX.utils.book_new();
