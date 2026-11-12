@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Head Count — Universal Guest List Manager</title>
   <link rel="icon" type="image/png" href="https://cdn-icons-png.magnific.com/256/12756/12756133.png?semt=ais_white_label" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -10,8 +10,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <!-- Lucide Icons (Strictly no emojis) -->
   <script src="https://unpkg.com/lucide@latest"></script>
-  <!-- SheetJS for Excel (.xlsx) Export -->
-  <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+  <!-- xlsx-js-style for Styled Excel (.xlsx) Export (Borders, Bold Headers, Merged Cells, Colors, Column Widths) -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
 
   <style>
     :root {
@@ -45,6 +45,12 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html {
+      -webkit-text-size-adjust: 100%;
+      touch-action: manipulation;
     }
 
     body {
@@ -56,6 +62,11 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+    }
+
+    /* Prevent iOS Safari auto-zoom on input focus by ensuring >= 16px font-size on inputs */
+    input, textarea, select {
+      font-size: 16px !important;
     }
 
     /* Header / Navbar */
@@ -144,7 +155,7 @@
       background: var(--bg-subtle);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-sm);
-      height: 38px;
+      height: 40px;
       padding: 0 0.875rem;
       gap: 0.875rem;
     }
@@ -181,13 +192,13 @@
       background: var(--border-color);
     }
 
-    /* Buttons - Strictly Aligned Heights & Icons */
+    /* Buttons */
     .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 0.45rem;
-      height: 38px;
+      height: 40px;
       font-family: inherit;
       font-size: 0.8125rem;
       font-weight: 600;
@@ -261,8 +272,8 @@
 
     /* Icon-only Buttons */
     .btn-icon {
-      width: 32px;
-      height: 32px;
+      width: 34px;
+      height: 34px;
       padding: 0;
       border-radius: var(--radius-sm);
       background: transparent;
@@ -277,8 +288,8 @@
     }
 
     .btn-icon svg {
-      width: 16px;
-      height: 16px;
+      width: 17px;
+      height: 17px;
     }
 
     .btn-icon:hover {
@@ -288,8 +299,8 @@
 
     /* Solid Red Small Delete Icon Button */
     .btn-icon-danger {
-      width: 30px;
-      height: 30px;
+      width: 32px;
+      height: 32px;
       padding: 0;
       border-radius: 6px;
       background: var(--danger);
@@ -304,8 +315,8 @@
     }
 
     .btn-icon-danger svg {
-      width: 14px;
-      height: 14px;
+      width: 15px;
+      height: 15px;
       color: #ffffff;
     }
 
@@ -323,7 +334,7 @@
       flex: 1;
     }
 
-    /* Event Metadata Banner */
+    /* Event Metadata Banner (2 Fields: Event Title & Event Date / Venue) */
     .event-header-card {
       background: var(--bg-surface);
       border: 1px solid var(--border-color);
@@ -332,19 +343,19 @@
       margin-bottom: 1.25rem;
       box-shadow: var(--shadow-sm);
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr);
       gap: 0.75rem;
     }
 
     .meta-input-group {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.55rem;
       background: var(--bg-primary);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-sm);
-      padding: 0 0.75rem;
-      height: 38px;
+      padding: 0 0.8rem;
+      height: 42px;
       transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast);
     }
 
@@ -355,8 +366,8 @@
     }
 
     .meta-input-group svg {
-      width: 15px;
-      height: 15px;
+      width: 16px;
+      height: 16px;
       color: var(--text-muted);
       flex-shrink: 0;
     }
@@ -365,7 +376,6 @@
       border: none;
       background: transparent;
       font-family: inherit;
-      font-size: 0.8125rem;
       font-weight: 600;
       color: var(--text-primary);
       width: 100%;
@@ -395,8 +405,8 @@
       align-items: center;
       gap: 0.55rem;
       flex: 1;
-      max-width: 420px;
-      height: 38px;
+      max-width: 440px;
+      height: 42px;
       padding: 0 0.85rem;
       background: var(--bg-surface);
       border: 1px solid var(--border-color);
@@ -423,7 +433,6 @@
       border: none;
       background: transparent;
       font-family: inherit;
-      font-size: 0.875rem;
       color: var(--text-primary);
       min-width: 0;
     }
@@ -454,7 +463,7 @@
       background: var(--bg-surface);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-md);
-      padding: 0.85rem 1rem;
+      padding: 0.875rem 1rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -530,7 +539,7 @@
     .pax-pill {
       font-size: 0.75rem;
       font-weight: 700;
-      padding: 0.2rem 0.55rem;
+      padding: 0.22rem 0.58rem;
       border-radius: 999px;
       font-variant-numeric: tabular-nums;
       letter-spacing: 0.01em;
@@ -698,7 +707,7 @@
       gap: 0.75rem;
     }
 
-    /* Guest Member List inside Modal */
+    /* Guest Member List inside Modal - Polished Smooth Pointer & Touch Drag Sorting */
     .drag-hint {
       display: flex;
       align-items: center;
@@ -724,6 +733,7 @@
       display: flex;
       flex-direction: column;
       gap: 0.5rem;
+      position: relative;
     }
 
     .member-row {
@@ -734,8 +744,14 @@
       border: 1px solid var(--border-color);
       border-radius: var(--radius-sm);
       padding: 0.5rem 0.75rem;
-      min-height: 46px;
-      transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast), background-color var(--transition-fast);
+      min-height: 48px;
+      position: relative;
+      user-select: none;
+      will-change: transform;
+      transition: transform 220ms cubic-bezier(0.2, 0, 0, 1),
+                  box-shadow 180ms ease,
+                  border-color 180ms ease,
+                  background-color 180ms ease;
     }
 
     .member-row.is-head {
@@ -743,15 +759,13 @@
       background: #f8faff;
     }
 
-    .member-row.dragging {
-      opacity: 0.45;
-      background: var(--bg-subtle);
-      border-style: dashed;
-    }
-
-    .member-row.drag-over {
+    .member-row.is-dragging {
+      z-index: 25;
+      background: #ffffff;
       border-color: var(--accent-blue);
-      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+      box-shadow: 0 14px 28px -6px rgba(15, 23, 42, 0.18), 0 6px 12px -4px rgba(37, 99, 235, 0.14);
+      transition: box-shadow 180ms ease, border-color 180ms ease;
+      cursor: grabbing;
     }
 
     .drag-handle {
@@ -760,11 +774,12 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 24px;
-      height: 28px;
-      border-radius: 4px;
+      width: 28px;
+      height: 32px;
+      border-radius: 6px;
       touch-action: none;
       flex-shrink: 0;
+      transition: background-color var(--transition-fast), color var(--transition-fast);
     }
 
     .drag-handle:hover {
@@ -774,18 +789,21 @@
 
     .drag-handle:active {
       cursor: grabbing;
+      background: #e2e8f0;
+      color: var(--accent-blue);
     }
 
     .drag-handle svg {
-      width: 16px;
-      height: 16px;
+      width: 17px;
+      height: 17px;
+      pointer-events: none;
     }
 
     .member-rank {
       font-size: 0.75rem;
       font-weight: 700;
-      width: 22px;
-      height: 22px;
+      width: 23px;
+      height: 23px;
       border-radius: 999px;
       display: inline-flex;
       align-items: center;
@@ -794,6 +812,7 @@
       color: var(--text-secondary);
       flex-shrink: 0;
       font-variant-numeric: tabular-nums;
+      transition: background-color 180ms ease, color 180ms ease;
     }
 
     .member-row.is-head .member-rank {
@@ -810,7 +829,7 @@
     }
 
     .member-name-tap {
-      font-size: 0.875rem;
+      font-size: 0.9rem;
       font-weight: 600;
       color: var(--text-primary);
       cursor: pointer;
@@ -829,10 +848,9 @@
 
     .inline-edit-input {
       width: 100%;
-      height: 32px;
+      height: 34px;
       padding: 0 0.55rem;
       font-family: inherit;
-      font-size: 0.875rem;
       font-weight: 600;
       color: var(--text-primary);
       background: var(--bg-surface);
@@ -872,8 +890,8 @@
     }
 
     .btn-arrow {
-      width: 22px;
-      height: 15px;
+      width: 24px;
+      height: 16px;
       padding: 0;
       border: none;
       background: transparent;
@@ -900,7 +918,7 @@
       height: 13px;
     }
 
-    /* Inline Add Guest Row (Text box + Add Guest button right beside each other) */
+    /* Inline Add Guest Row */
     .add-member-box {
       margin-top: 1rem;
       padding-top: 1rem;
@@ -915,10 +933,9 @@
 
     .form-control {
       width: 100%;
-      height: 38px;
+      height: 40px;
       padding: 0 0.75rem;
       font-family: inherit;
-      font-size: 0.875rem;
       color: var(--text-primary);
       background: var(--bg-surface);
       border: 1px solid var(--border-color);
@@ -928,8 +945,8 @@
 
     textarea.form-control {
       height: auto;
-      padding: 0.6rem 0.75rem;
-      line-height: 1.45;
+      padding: 0.65rem 0.75rem;
+      line-height: 1.5;
       resize: vertical;
     }
 
@@ -942,19 +959,25 @@
     .form-stack {
       display: flex;
       flex-direction: column;
-      gap: 0.875rem;
+      gap: 0.75rem;
     }
 
     .form-group {
       display: flex;
       flex-direction: column;
-      gap: 0.35rem;
+      gap: 0.4rem;
     }
 
     .form-label {
-      font-size: 0.75rem;
+      font-size: 0.8125rem;
       font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .form-helper {
+      font-size: 0.75rem;
       color: var(--text-secondary);
+      line-height: 1.45;
     }
 
     /* Toast Notification */
@@ -1043,7 +1066,7 @@
         <div class="brand-info">
           <div class="brand-title-row">
             <span class="brand-title">Head Count</span>
-            <span class="version-badge">v1.01</span>
+            <span class="version-badge">v1.01 (a)</span>
           </div>
           <span class="brand-subtitle">Universal Wedding &amp; Event Guest Counter</span>
         </div>
@@ -1100,15 +1123,6 @@
           placeholder="Event Date / Venue"
         />
       </div>
-      <div class="meta-input-group">
-        <i data-lucide="user-check"></i>
-        <input
-          type="text"
-          id="eventHostInput"
-          class="meta-input"
-          placeholder="Host / Family Side"
-        />
-      </div>
     </section>
 
     <!-- Search & Delete All Toolbar (Aligned in One Line) -->
@@ -1142,7 +1156,7 @@
       </div>
       <h2 class="empty-title" id="emptyStateTitle">No guest groups yet</h2>
       <p class="empty-desc" id="emptyStateDesc">
-        Create your first group tile by adding a primary guest and any accompanying family members or plus-ones.
+        Create your first group tile by entering guest names separated by a new line or comma.
       </p>
       <button type="button" class="btn btn-primary" id="emptyAddBtn">
         <i data-lucide="plus"></i>
@@ -1151,7 +1165,7 @@
     </div>
   </main>
 
-  <!-- Modal 1: Add New Group (Names Only) -->
+  <!-- Modal 1: Add New Group (Single Text Box Only) -->
   <div class="modal-backdrop" id="newGroupModal" role="dialog" aria-modal="true" aria-labelledby="newGroupModalTitle">
     <div class="modal-dialog">
       <div class="modal-header">
@@ -1159,7 +1173,7 @@
           <i data-lucide="folder-plus" style="width: 20px; height: 20px; color: var(--accent-blue); flex-shrink: 0;"></i>
           <div>
             <h3 class="modal-title" id="newGroupModalTitle">Create New Guest Group</h3>
-            <p class="modal-subtitle">First guest becomes the primary tile name on the main screen</p>
+            <p class="modal-subtitle">First name entered automatically becomes the Group Header</p>
           </div>
         </div>
         <button type="button" class="btn-icon" data-close-modal="newGroupModal" aria-label="Close">
@@ -1171,27 +1185,17 @@
         <div class="modal-body">
           <div class="form-stack">
             <div class="form-group">
-              <label class="form-label" for="newPrimaryName">Primary Guest Name (Group Head) *</label>
-              <input
-                type="text"
-                id="newPrimaryName"
-                class="form-control"
-                placeholder="e.g., Mr. XYZ"
-                required
-                autocomplete="off"
-              />
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="newAdditionalGuests">
-                Accompanying Guest Names (Optional — comma or new-line separated)
-              </label>
+              <label class="form-label" for="newGroupNamesInput">Enter Guest Names *</label>
               <textarea
-                id="newAdditionalGuests"
+                id="newGroupNamesInput"
                 class="form-control"
-                rows="3"
-                placeholder="e.g., Mr. ABC, Mr. DEF"
+                rows="5"
+                placeholder="Enter Guests Name&#10;&#10;"
+                required
               ></textarea>
+              <span class="form-helper">
+                Write names one below another or separate with commas. The first name (or name before the first comma) automatically becomes the Group Header.
+              </span>
             </div>
           </div>
         </div>
@@ -1207,7 +1211,7 @@
     </div>
   </div>
 
-  <!-- Modal 2: Group Details, Sorting, Tap-to-Edit Name & Inline Add Guest -->
+  <!-- Modal 2: Group Details, Smooth Drag Sorting, Tap-to-Edit Name & Inline Add Guest -->
   <div class="modal-backdrop" id="groupDetailModal" role="dialog" aria-modal="true" aria-labelledby="detailModalTitle">
     <div class="modal-dialog">
       <div class="modal-header">
@@ -1229,10 +1233,10 @@
       <div class="modal-body">
         <div class="drag-hint">
           <i data-lucide="info"></i>
-          <span>Tap any name to edit. Drag or use arrows to reorder — top guest (#1) sets the group tile name.</span>
+          <span>Tap any name to edit. Drag the handle up or down to reorder — top guest (#1) sets the group header.</span>
         </div>
 
-        <!-- Draggable Member List -->
+        <!-- Smooth Draggable Member List -->
         <div id="memberList" class="member-list"></div>
 
         <!-- Inline Add Guest Form (Input + Button Right Beside Each Other) -->
@@ -1310,8 +1314,7 @@
       let state = {
         meta: {
           title: 'Wedding Guest List',
-          date: '',
-          host: ''
+          date: ''
         },
         groups: []
       };
@@ -1319,7 +1322,6 @@
       let activeGroupId = null;
       let inlineEditingMemberId = null;
       let pendingConfirmAction = null;
-      let draggedMemberIndex = null;
 
       // DOM References
       const els = {
@@ -1327,7 +1329,6 @@
         totalPaxCount: document.getElementById('totalPaxCount'),
         eventTitleInput: document.getElementById('eventTitleInput'),
         eventDateInput: document.getElementById('eventDateInput'),
-        eventHostInput: document.getElementById('eventHostInput'),
         searchInput: document.getElementById('searchInput'),
         tilesGrid: document.getElementById('tilesGrid'),
         emptyState: document.getElementById('emptyState'),
@@ -1340,8 +1341,7 @@
         // New Group Modal
         newGroupModal: document.getElementById('newGroupModal'),
         newGroupForm: document.getElementById('newGroupForm'),
-        newPrimaryName: document.getElementById('newPrimaryName'),
-        newAdditionalGuests: document.getElementById('newAdditionalGuests'),
+        newGroupNamesInput: document.getElementById('newGroupNamesInput'),
         // Detail Modal
         groupDetailModal: document.getElementById('groupDetailModal'),
         detailModalTitle: document.getElementById('detailModalTitle'),
@@ -1376,8 +1376,7 @@
               state = {
                 meta: {
                   title: parsed.meta?.title || 'Wedding Guest List',
-                  date: parsed.meta?.date || '',
-                  host: parsed.meta?.host || ''
+                  date: parsed.meta?.date || ''
                 },
                 groups: parsed.groups
               };
@@ -1389,7 +1388,6 @@
 
         els.eventTitleInput.value = state.meta.title;
         els.eventDateInput.value = state.meta.date;
-        els.eventHostInput.value = state.meta.host;
       }
 
       function saveState() {
@@ -1471,7 +1469,7 @@
           } else {
             els.emptyStateTitle.textContent = 'No guest groups yet';
             els.emptyStateDesc.textContent =
-              'Create your first group tile by adding a primary guest and any accompanying family members or plus-ones.';
+              'Create your first group tile by entering guest names separated by a new line or comma.';
             els.emptyAddBtn.style.display = 'inline-flex';
           }
           return;
@@ -1567,40 +1565,30 @@
       function triggerNewGroupModal() {
         els.newGroupForm.reset();
         openModal(els.newGroupModal);
-        setTimeout(() => els.newPrimaryName.focus(), 80);
+        setTimeout(() => els.newGroupNamesInput.focus(), 80);
       }
 
       els.openNewGroupModalBtn.addEventListener('click', triggerNewGroupModal);
       els.emptyAddBtn.addEventListener('click', triggerNewGroupModal);
 
-      // Handle Create New Group (Names Only)
+      // Handle Create New Group (Single Textarea: Newline or Comma Separated)
       els.newGroupForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        const primaryName = els.newPrimaryName.value.trim();
-        if (!primaryName) return;
+        const rawInput = els.newGroupNamesInput.value;
+        const parsedNames = rawInput
+          .split(/[\n,]+/)
+          .map((s) => s.trim())
+          .filter(Boolean);
 
-        const extraRaw = els.newAdditionalGuests.value;
-
-        const members = [
-          {
-            id: uid('mem'),
-            name: primaryName
-          }
-        ];
-
-        if (extraRaw.trim()) {
-          const extras = extraRaw
-            .split(/[\n,]+/)
-            .map((s) => s.trim())
-            .filter(Boolean);
-
-          extras.forEach((guestName) => {
-            members.push({
-              id: uid('mem'),
-              name: guestName
-            });
-          });
+        if (parsedNames.length === 0) {
+          showToast('Please enter at least one guest name');
+          return;
         }
+
+        const members = parsedNames.map((guestName) => ({
+          id: uid('mem'),
+          name: guestName
+        }));
 
         state.groups.push({
           id: uid('grp'),
@@ -1610,7 +1598,7 @@
         saveState();
         renderMain();
         closeModal(els.newGroupModal);
-        showToast(`Added "${primaryName}" (+${members.length - 1})`);
+        showToast(`Added "${members[0].name}" (+${members.length - 1})`);
       });
 
       // Open Group Detail Modal
@@ -1622,7 +1610,77 @@
         openModal(els.groupDetailModal);
       }
 
-      // Render Group Detail Modal (Tap-to-Edit Name + Drag/Arrow Reorder)
+      // Smooth Pointer-Based Drag & Drop Reorder Controller (Works seamlessly on iOS Touch + Desktop Mouse)
+      function attachSmoothDragReorder(handleEl, rowEl, startIndex) {
+        handleEl.addEventListener('pointerdown', (e) => {
+          if (e.button !== 0 && e.pointerType === 'mouse') return;
+          e.preventDefault();
+          e.stopPropagation();
+
+          const group = state.groups.find((g) => g.id === activeGroupId);
+          if (!group || group.members.length <= 1) return;
+
+          const rows = Array.from(els.memberList.querySelectorAll('.member-row'));
+          const startY = e.clientY;
+          const rowRect = rowEl.getBoundingClientRect();
+          const gap = 8; // 0.5rem gap
+          const slotHeight = rowRect.height + gap;
+
+          let currentTargetIndex = startIndex;
+
+          rowEl.classList.add('is-dragging');
+          handleEl.setPointerCapture(e.pointerId);
+
+          const onPointerMove = (moveEvent) => {
+            const deltaY = moveEvent.clientY - startY;
+            rowEl.style.transform = `translate3d(0, ${deltaY}px, 0) scale(1.02)`;
+
+            const offsetSlots = Math.round(deltaY / slotHeight);
+            const newTargetIndex = Math.max(0, Math.min(rows.length - 1, startIndex + offsetSlots));
+
+            if (newTargetIndex !== currentTargetIndex) {
+              currentTargetIndex = newTargetIndex;
+              rows.forEach((r, idx) => {
+                if (idx === startIndex) return;
+                if (startIndex < currentTargetIndex && idx > startIndex && idx <= currentTargetIndex) {
+                  r.style.transform = `translate3d(0, -${slotHeight}px, 0)`;
+                } else if (startIndex > currentTargetIndex && idx < startIndex && idx >= currentTargetIndex) {
+                  r.style.transform = `translate3d(0, ${slotHeight}px, 0)`;
+                } else {
+                  r.style.transform = 'translate3d(0, 0, 0)';
+                }
+              });
+            }
+          };
+
+          const cleanup = () => {
+            handleEl.removeEventListener('pointermove', onPointerMove);
+            handleEl.removeEventListener('pointerup', onPointerUp);
+            handleEl.removeEventListener('pointercancel', onPointerCancel);
+            rowEl.classList.remove('is-dragging');
+            rows.forEach((r) => {
+              r.style.transform = '';
+            });
+          };
+
+          const onPointerUp = () => {
+            cleanup();
+            if (currentTargetIndex !== startIndex) {
+              moveMember(startIndex, currentTargetIndex);
+            }
+          };
+
+          const onPointerCancel = () => {
+            cleanup();
+          };
+
+          handleEl.addEventListener('pointermove', onPointerMove);
+          handleEl.addEventListener('pointerup', onPointerUp);
+          handleEl.addEventListener('pointercancel', onPointerCancel);
+        });
+      }
+
+      // Render Group Detail Modal (Tap-to-Edit Name + Smooth Drag/Arrow Reorder)
       function renderGroupDetailModal() {
         const group = state.groups.find((g) => g.id === activeGroupId);
         if (!group) {
@@ -1648,11 +1706,10 @@
           const isEditing = inlineEditingMemberId === member.id;
           const row = document.createElement('div');
           row.className = `member-row ${isHead ? 'is-head' : ''}`;
-          row.setAttribute('draggable', isEditing ? 'false' : 'true');
           row.dataset.index = idx;
 
           row.innerHTML = `
-            <div class="drag-handle" title="Drag to reorder">
+            <div class="drag-handle" title="Drag up or down to reorder">
               <i data-lucide="grip-vertical"></i>
             </div>
             <span class="member-rank">${idx + 1}</span>
@@ -1727,6 +1784,10 @@
               inlineEditingMemberId = member.id;
               renderGroupDetailModal();
             });
+
+            // Attach Smooth Pointer Dragging on the Grip Handle
+            const handleEl = row.querySelector('.drag-handle');
+            attachSmoothDragReorder(handleEl, row, idx);
           }
 
           // Arrow Button Reordering
@@ -1735,42 +1796,6 @@
 
           // Delete Guest
           row.querySelector('[data-action="delete"]').addEventListener('click', () => removeMember(member.id));
-
-          // HTML5 Drag & Drop Events
-          if (!isEditing) {
-            row.addEventListener('dragstart', (e) => {
-              draggedMemberIndex = idx;
-              row.classList.add('dragging');
-              e.dataTransfer.effectAllowed = 'move';
-              e.dataTransfer.setData('text/plain', String(idx));
-            });
-
-            row.addEventListener('dragend', () => {
-              draggedMemberIndex = null;
-              row.classList.remove('dragging');
-              document.querySelectorAll('.member-row').forEach((r) => r.classList.remove('drag-over'));
-            });
-
-            row.addEventListener('dragover', (e) => {
-              e.preventDefault();
-              e.dataTransfer.dropEffect = 'move';
-              if (draggedMemberIndex !== null && draggedMemberIndex !== idx) {
-                row.classList.add('drag-over');
-              }
-            });
-
-            row.addEventListener('dragleave', () => {
-              row.classList.remove('drag-over');
-            });
-
-            row.addEventListener('drop', (e) => {
-              e.preventDefault();
-              row.classList.remove('drag-over');
-              if (draggedMemberIndex !== null && draggedMemberIndex !== idx) {
-                moveMember(draggedMemberIndex, idx);
-              }
-            });
-          }
 
           els.memberList.appendChild(row);
         });
@@ -1919,11 +1944,10 @@
       });
 
       // Sync Event Metadata Inputs
-      [els.eventTitleInput, els.eventDateInput, els.eventHostInput].forEach((input) => {
+      [els.eventTitleInput, els.eventDateInput].forEach((input) => {
         input.addEventListener('input', () => {
           state.meta.title = els.eventTitleInput.value.trim() || 'Wedding Guest List';
           state.meta.date = els.eventDateInput.value.trim();
-          state.meta.host = els.eventHostInput.value.trim();
           saveState();
         });
       });
@@ -1931,9 +1955,7 @@
       // Search Input
       els.searchInput.addEventListener('input', renderMain);
 
-      // Excel Export (.xlsx)
-      // - Top of Excel sheet: Total Pax and all event details in header
-      // - Group-wise sections with 1 row gap & guest header + guest names below
+      // Professionally Formatted Excel Export (.xlsx with Borders, Merged Headers, Colors, Proper Column Widths, No Clipped Text)
       els.exportExcelBtn.addEventListener('click', () => {
         if (state.groups.length === 0) {
           showToast('Add at least one guest group before exporting');
@@ -1947,61 +1969,202 @@
 
         const totalPax = getTotalPax();
         const totalGroups = state.groups.length;
-        const eventTitle = state.meta.title || 'Wedding Guest List';
-        const eventDate = state.meta.date || 'Not Specified';
-        const eventHost = state.meta.host || 'Not Specified';
+        const eventTitle = (state.meta.title || 'Wedding Guest List').trim();
+        const eventDate = (state.meta.date || 'Not Specified').trim();
         const exportedOn = new Date().toLocaleDateString('en-GB', {
           day: '2-digit',
           month: 'short',
           year: 'numeric'
         });
 
-        const rows = [];
+        // Reusable Excel Cell Styles
+        const thinBorder = {
+          top: { style: 'thin', color: { rgb: 'CBD5E1' } },
+          bottom: { style: 'thin', color: { rgb: 'CBD5E1' } },
+          left: { style: 'thin', color: { rgb: 'CBD5E1' } },
+          right: { style: 'thin', color: { rgb: 'CBD5E1' } }
+        };
 
-        // Top Summary & Event Header Block
-        rows.push([eventTitle.toUpperCase(), '', '', '']);
-        rows.push(['TOTAL PAX', totalPax, 'TOTAL GROUPS', totalGroups]);
-        rows.push(['EVENT DATE / VENUE', eventDate, 'HOST / SIDE', `${eventHost} (Exported: ${exportedOn})`]);
-        rows.push([]); // 1 blank row after top header block
+        const titleBannerStyle = {
+          font: { name: 'Calibri', sz: 15, bold: true, color: { rgb: 'FFFFFF' } },
+          fill: { fgColor: { rgb: '0F172A' } },
+          alignment: { horizontal: 'left', vertical: 'center', indent: 1 },
+          border: thinBorder
+        };
 
-        // Group-Wise Sections with 1 Row Gap
+        const metaLabelStyle = {
+          font: { name: 'Calibri', sz: 11, bold: true, color: { rgb: '1E293B' } },
+          fill: { fgColor: { rgb: 'F1F5F9' } },
+          alignment: { horizontal: 'left', vertical: 'center', indent: 1 },
+          border: thinBorder
+        };
+
+        const metaValueStyle = {
+          font: { name: 'Calibri', sz: 11, bold: true, color: { rgb: '2563EB' } },
+          fill: { fgColor: { rgb: 'FFFFFF' } },
+          alignment: { horizontal: 'center', vertical: 'center' },
+          border: thinBorder
+        };
+
+        const metaTextValueStyle = {
+          font: { name: 'Calibri', sz: 11, bold: false, color: { rgb: '0F172A' } },
+          fill: { fgColor: { rgb: 'FFFFFF' } },
+          alignment: { horizontal: 'left', vertical: 'center', indent: 1 },
+          border: thinBorder
+        };
+
+        const groupBannerLeftStyle = {
+          font: { name: 'Calibri', sz: 11, bold: true, color: { rgb: '1E3A8A' } },
+          fill: { fgColor: { rgb: 'DBEAFE' } },
+          alignment: { horizontal: 'left', vertical: 'center', indent: 1 },
+          border: thinBorder
+        };
+
+        const groupBannerRightLabelStyle = {
+          font: { name: 'Calibri', sz: 11, bold: true, color: { rgb: '1E3A8A' } },
+          fill: { fgColor: { rgb: 'DBEAFE' } },
+          alignment: { horizontal: 'right', vertical: 'center' },
+          border: thinBorder
+        };
+
+        const groupBannerRightValStyle = {
+          font: { name: 'Calibri', sz: 11, bold: true, color: { rgb: '1E3A8A' } },
+          fill: { fgColor: { rgb: 'DBEAFE' } },
+          alignment: { horizontal: 'center', vertical: 'center' },
+          border: thinBorder
+        };
+
+        const tableHeaderStyle = {
+          font: { name: 'Calibri', sz: 11, bold: true, color: { rgb: 'FFFFFF' } },
+          fill: { fgColor: { rgb: '334155' } },
+          alignment: { horizontal: 'left', vertical: 'center', indent: 1 },
+          border: thinBorder
+        };
+
+        const tableHeaderCenterStyle = {
+          font: { name: 'Calibri', sz: 11, bold: true, color: { rgb: 'FFFFFF' } },
+          fill: { fgColor: { rgb: '334155' } },
+          alignment: { horizontal: 'center', vertical: 'center' },
+          border: thinBorder
+        };
+
+        const dataCenterStyle = {
+          font: { name: 'Calibri', sz: 11, color: { rgb: '334155' } },
+          fill: { fgColor: { rgb: 'FFFFFF' } },
+          alignment: { horizontal: 'center', vertical: 'center' },
+          border: thinBorder
+        };
+
+        const dataNamePrimaryStyle = {
+          font: { name: 'Calibri', sz: 11, bold: true, color: { rgb: '0F172A' } },
+          fill: { fgColor: { rgb: 'F8FAFC' } },
+          alignment: { horizontal: 'left', vertical: 'center', indent: 1 },
+          border: thinBorder
+        };
+
+        const dataNameGuestStyle = {
+          font: { name: 'Calibri', sz: 11, bold: false, color: { rgb: '0F172A' } },
+          fill: { fgColor: { rgb: 'FFFFFF' } },
+          alignment: { horizontal: 'left', vertical: 'center', indent: 1 },
+          border: thinBorder
+        };
+
+        const dataRoleStyle = {
+          font: { name: 'Calibri', sz: 11, color: { rgb: '475569' } },
+          fill: { fgColor: { rgb: 'FFFFFF' } },
+          alignment: { horizontal: 'left', vertical: 'center', indent: 1 },
+          border: thinBorder
+        };
+
+        const aoa = [];
+        const merges = [];
+        const rowHeights = [];
+
+        // Row 0: Event Title Banner (Merged A1:D1)
+        aoa.push([
+          { v: eventTitle.toUpperCase(), s: titleBannerStyle },
+          { v: '', s: titleBannerStyle },
+          { v: '', s: titleBannerStyle },
+          { v: '', s: titleBannerStyle }
+        ]);
+        merges.push({ s: { r: 0, c: 0 }, e: { r: 0, c: 3 } });
+        rowHeights.push({ hpt: 30 });
+
+        // Row 1: Total Pax & Total Groups Summary
+        aoa.push([
+          { v: 'TOTAL PAX', s: metaLabelStyle },
+          { v: totalPax, t: 'n', s: metaValueStyle },
+          { v: 'TOTAL GROUPS', s: metaLabelStyle },
+          { v: totalGroups, t: 'n', s: metaValueStyle }
+        ]);
+        rowHeights.push({ hpt: 24 });
+
+        // Row 2: Event Date / Venue & Export Date (No Host / Family Side)
+        aoa.push([
+          { v: 'EVENT DATE / VENUE', s: metaLabelStyle },
+          { v: eventDate, s: metaTextValueStyle },
+          { v: 'EXPORTED ON', s: metaLabelStyle },
+          { v: exportedOn, s: metaTextValueStyle }
+        ]);
+        rowHeights.push({ hpt: 24 });
+
+        // Row 3: 1 Row Blank Gap
+        aoa.push(['', '', '', '']);
+        rowHeights.push({ hpt: 16 });
+
+        // Group-Wise Sections with 1 Row Gap Between Each Group
         state.groups.forEach((group, gIdx) => {
           const groupHead = getGroupDisplayName(group);
           const plusCount = getPlusCount(group);
           const groupTotal = group.members.length;
 
-          // Group Title Banner Row
-          rows.push([
-            `GROUP ${gIdx + 1}: ${groupHead} (+${plusCount})`,
-            '',
-            'Group Pax:',
-            groupTotal
+          const groupHeaderRowIdx = aoa.length;
+          aoa.push([
+            { v: `GROUP ${gIdx + 1}: ${groupHead} (+${plusCount})`, s: groupBannerLeftStyle },
+            { v: '', s: groupBannerLeftStyle },
+            { v: 'Group Pax:', s: groupBannerRightLabelStyle },
+            { v: groupTotal, t: 'n', s: groupBannerRightValStyle }
           ]);
+          // Merge A and B so long Group Head names never clip
+          merges.push({ s: { r: groupHeaderRowIdx, c: 0 }, e: { r: groupHeaderRowIdx, c: 1 } });
+          rowHeights.push({ hpt: 24 });
 
-          // Guest Table Header Row
-          rows.push(['Sr. No.', 'Guest Name', 'Role', 'Group Head']);
+          // Guest Table Column Headers
+          aoa.push([
+            { v: 'Sr. No.', s: tableHeaderCenterStyle },
+            { v: 'Guest Name', s: tableHeaderStyle },
+            { v: 'Role', s: tableHeaderStyle },
+            { v: 'Group Head', s: tableHeaderStyle }
+          ]);
+          rowHeights.push({ hpt: 22 });
 
           // Guest Rows below Header
           group.members.forEach((member, mIdx) => {
-            rows.push([
-              mIdx + 1,
-              member.name,
-              mIdx === 0 ? 'Group Head (Primary)' : 'Accompanying Guest',
-              groupHead
+            const isPrimary = mIdx === 0;
+            aoa.push([
+              { v: mIdx + 1, t: 'n', s: dataCenterStyle },
+              { v: member.name, s: isPrimary ? dataNamePrimaryStyle : dataNameGuestStyle },
+              { v: isPrimary ? 'Group Head (Primary)' : 'Accompanying Guest', s: dataRoleStyle },
+              { v: groupHead, s: dataRoleStyle }
             ]);
+            rowHeights.push({ hpt: 21 });
           });
 
           // 1 Row Gap after each group
-          rows.push([]);
+          aoa.push(['', '', '', '']);
+          rowHeights.push({ hpt: 16 });
         });
 
-        const worksheet = XLSX.utils.aoa_to_sheet(rows);
+        const worksheet = XLSX.utils.aoa_to_sheet(aoa);
+        worksheet['!merges'] = merges;
+        worksheet['!rows'] = rowHeights;
 
+        // Generous Column Widths so no header or name is ever truncated
         worksheet['!cols'] = [
-          { wch: 16 },
-          { wch: 32 },
           { wch: 24 },
-          { wch: 28 }
+          { wch: 36 },
+          { wch: 26 },
+          { wch: 32 }
         ];
 
         const workbook = XLSX.utils.book_new();
@@ -2013,7 +2176,7 @@
           .replace(/^_|_$/g, '');
 
         XLSX.writeFile(workbook, `${safeFileName || 'Head_Count'}_Guest_List.xlsx`);
-        showToast('Excel guest list downloaded');
+        showToast('Formatted Excel guest list downloaded');
       });
 
       // Initialize App
