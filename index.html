@@ -1,0 +1,2048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Head Count — Universal Guest List Manager</title>
+  <link rel="icon" type="image/png" href="https://cdn-icons-png.magnific.com/256/12756/12756133.png?semt=ais_white_label" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- Lucide Icons (Strictly no emojis) -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- SheetJS for Excel (.xlsx) Export -->
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+
+  <style>
+    :root {
+      --bg-primary: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-subtle: #f1f5f9;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+      --border-color: #e2e8f0;
+      --border-focus: #3b82f6;
+      --accent-primary: #0f172a;
+      --accent-hover: #1e293b;
+      --accent-blue: #2563eb;
+      --accent-blue-light: #eff6ff;
+      --danger: #dc2626;
+      --danger-light: #fef2f2;
+      --danger-hover: #b91c1c;
+      --success: #059669;
+      --success-light: #ecfdf5;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-smooth: 260ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header / Navbar */
+    .app-header {
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .header-container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0.875rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      object-fit: contain;
+      border-radius: 8px;
+      background: var(--bg-subtle);
+      padding: 4px;
+      border: 1px solid var(--border-color);
+    }
+
+    .brand-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-title-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .brand-title {
+      font-size: 1.125rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+    }
+
+    .version-badge {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 0.125rem 0.45rem;
+      border-radius: 999px;
+      background: var(--bg-subtle);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-color);
+    }
+
+    .brand-subtitle {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    /* Header Stats & Actions */
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .stats-bar {
+      display: flex;
+      align-items: center;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 0.375rem 0.75rem;
+      gap: 1rem;
+    }
+
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .stat-item i {
+      width: 15px;
+      height: 15px;
+      color: var(--text-secondary);
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .stat-value {
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .stat-divider {
+      width: 1px;
+      height: 18px;
+      background: var(--border-color);
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      font-family: inherit;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      padding: 0.5rem 0.9rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .btn i {
+      width: 16px;
+      height: 16px;
+      stroke-width: 2;
+    }
+
+    .btn-primary {
+      background: var(--accent-primary);
+      color: #ffffff;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-secondary {
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      border-color: var(--border-color);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-subtle);
+      border-color: #cbd5e1;
+    }
+
+    .btn-excel {
+      background: var(--success-light);
+      color: var(--success);
+      border-color: #a7f3d0;
+    }
+
+    .btn-excel:hover {
+      background: #d1fae5;
+      border-color: #6ee7b7;
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: #ffffff;
+    }
+
+    .btn-danger:hover {
+      background: var(--danger-hover);
+    }
+
+    .btn-danger-outline {
+      background: var(--danger-light);
+      color: var(--danger);
+      border-color: #fecaca;
+    }
+
+    .btn-danger-outline:hover {
+      background: #fee2e2;
+      border-color: #fca5a5;
+    }
+
+    .btn-icon {
+      padding: 0.4rem;
+      border-radius: var(--radius-sm);
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--transition-fast);
+    }
+
+    .btn-icon:hover {
+      background: var(--bg-subtle);
+      color: var(--text-primary);
+    }
+
+    .btn-icon.danger:hover {
+      background: var(--danger-light);
+      color: var(--danger);
+    }
+
+    /* Main Content Area */
+    .main-container {
+      max-width: 1120px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 1.5rem 1.25rem 4rem;
+      flex: 1;
+    }
+
+    /* Event Metadata Banner */
+    .event-header-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .event-meta-fields {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      flex-wrap: wrap;
+      flex: 1;
+    }
+
+    .meta-input-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .meta-input-group i {
+      width: 16px;
+      height: 16px;
+      color: var(--text-muted);
+    }
+
+    .meta-input {
+      border: 1px solid transparent;
+      background: transparent;
+      font-family: inherit;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      padding: 0.25rem 0.5rem;
+      border-radius: 6px;
+      transition: all var(--transition-fast);
+      min-width: 180px;
+    }
+
+    .meta-input:hover {
+      background: var(--bg-subtle);
+    }
+
+    .meta-input:focus {
+      outline: none;
+      background: var(--bg-surface);
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+    }
+
+    .meta-input::placeholder {
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    /* Toolbar: Search & Filter */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+    }
+
+    .search-box {
+      position: relative;
+      flex: 1;
+      min-width: 240px;
+      max-width: 400px;
+    }
+
+    .search-box i {
+      position: absolute;
+      left: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 0.525rem 0.75rem 0.525rem 2.25rem;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      background: var(--bg-surface);
+      font-family: inherit;
+      font-size: 0.875rem;
+      color: var(--text-primary);
+      transition: all var(--transition-fast);
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+    }
+
+    .toolbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Compact Group Tiles Grid */
+    .tiles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 0.875rem;
+    }
+
+    .group-tile {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 0.875rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+      position: relative;
+      user-select: none;
+      animation: tileAppear 240ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    }
+
+    @keyframes tileAppear {
+      from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .group-tile:hover {
+      border-color: #cbd5e1;
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    .group-tile:active {
+      transform: translateY(0) scale(0.99);
+    }
+
+    .tile-left {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .tile-index {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--bg-subtle);
+      min-width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .tile-primary-name {
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .tile-right {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      flex-shrink: 0;
+    }
+
+    .pax-pill {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.01em;
+    }
+
+    .pax-pill.zero {
+      background: var(--bg-subtle);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-color);
+    }
+
+    .pax-pill.plus {
+      background: var(--accent-blue-light);
+      color: var(--accent-blue);
+      border: 1px solid #bfdbfe;
+    }
+
+    .tile-chevron {
+      width: 16px;
+      height: 16px;
+      color: var(--text-muted);
+      transition: transform var(--transition-fast), color var(--transition-fast);
+    }
+
+    .group-tile:hover .tile-chevron {
+      color: var(--text-primary);
+      transform: translateX(2px);
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 1.5rem;
+      background: var(--bg-surface);
+      border: 1px dashed #cbd5e1;
+      border-radius: var(--radius-lg);
+      max-width: 480px;
+      margin: 2rem auto;
+    }
+
+    .empty-icon-wrap {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: var(--bg-subtle);
+      color: var(--text-secondary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+
+    .empty-icon-wrap i {
+      width: 24px;
+      height: 24px;
+    }
+
+    .empty-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.35rem;
+    }
+
+    .empty-desc {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      margin-bottom: 1.25rem;
+    }
+
+    /* Modal System */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.45);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity var(--transition-smooth), visibility var(--transition-smooth);
+    }
+
+    .modal-backdrop.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-dialog {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 560px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-lg);
+      transform: scale(0.94) translateY(12px);
+      opacity: 0;
+      transition: transform var(--transition-smooth), opacity var(--transition-smooth);
+      overflow: hidden;
+    }
+
+    .modal-backdrop.open .modal-dialog {
+      transform: scale(1) translateY(0);
+      opacity: 1;
+    }
+
+    .modal-dialog.modal-sm {
+      max-width: 400px;
+    }
+
+    .modal-header {
+      padding: 1.125rem 1.25rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      background: var(--bg-surface);
+    }
+
+    .modal-title-group {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      min-width: 0;
+    }
+
+    .modal-title {
+      font-size: 1.0625rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .modal-subtitle {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 0.1rem;
+    }
+
+    .modal-body {
+      padding: 1.25rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .modal-footer {
+      padding: 0.875rem 1.25rem;
+      border-top: 1px solid var(--border-color);
+      background: var(--bg-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    /* Guest Member List inside Modal */
+    .drag-hint {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      background: var(--bg-subtle);
+      padding: 0.5rem 0.75rem;
+      border-radius: var(--radius-sm);
+      margin-bottom: 1rem;
+      border: 1px solid var(--border-color);
+    }
+
+    .drag-hint i {
+      width: 14px;
+      height: 14px;
+      color: var(--accent-blue);
+      flex-shrink: 0;
+    }
+
+    .member-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .member-row {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 0.6rem 0.75rem;
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast), background-color var(--transition-fast);
+    }
+
+    .member-row.is-head {
+      border-color: #93c5fd;
+      background: #f8faff;
+    }
+
+    .member-row.dragging {
+      opacity: 0.45;
+      background: var(--bg-subtle);
+      border-style: dashed;
+    }
+
+    .member-row.drag-over {
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+    }
+
+    .drag-handle {
+      cursor: grab;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      padding: 0.25rem;
+      border-radius: 4px;
+      touch-action: none;
+    }
+
+    .drag-handle:hover {
+      color: var(--text-primary);
+      background: var(--bg-subtle);
+    }
+
+    .drag-handle:active {
+      cursor: grabbing;
+    }
+
+    .drag-handle i {
+      width: 16px;
+      height: 16px;
+    }
+
+    .member-rank {
+      font-size: 0.75rem;
+      font-weight: 700;
+      min-width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-subtle);
+      color: var(--text-secondary);
+      flex-shrink: 0;
+    }
+
+    .member-row.is-head .member-rank {
+      background: var(--accent-blue);
+      color: #ffffff;
+    }
+
+    .member-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .member-name-line {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      flex-wrap: wrap;
+    }
+
+    .member-name {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .head-badge {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      background: var(--accent-blue-light);
+      color: var(--accent-blue);
+      border: 1px solid #bfdbfe;
+    }
+
+    .member-sub {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-top: 0.15rem;
+      flex-wrap: wrap;
+    }
+
+    .member-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.2rem;
+    }
+
+    .reorder-arrows {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .btn-arrow {
+      padding: 1px 3px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-arrow:hover:not(:disabled) {
+      background: var(--bg-subtle);
+      color: var(--text-primary);
+    }
+
+    .btn-arrow:disabled {
+      opacity: 0.25;
+      cursor: not-allowed;
+    }
+
+    .btn-arrow i {
+      width: 13px;
+      height: 13px;
+    }
+
+    /* Inline Add / Edit Form inside Modal */
+    .member-form-box {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .form-section-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-secondary);
+      margin-bottom: 0.65rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .form-section-title i {
+      width: 14px;
+      height: 14px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.65rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .form-group.full {
+      grid-column: 1 / -1;
+    }
+
+    .form-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.5rem 0.7rem;
+      font-family: inherit;
+      font-size: 0.875rem;
+      color: var(--text-primary);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+    }
+
+    .form-actions-row {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+
+    /* Toast Notification */
+    .toast-container {
+      position: fixed;
+      bottom: 1.25rem;
+      right: 1.25rem;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      pointer-events: none;
+    }
+
+    .toast {
+      background: var(--text-primary);
+      color: #ffffff;
+      padding: 0.65rem 1rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.8125rem;
+      font-weight: 500;
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      animation: toastIn 220ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .toast i {
+      width: 16px;
+      height: 16px;
+      color: #34d399;
+    }
+
+    @keyframes toastIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 640px) {
+      .header-container {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .header-controls {
+        justify-content: space-between;
+      }
+
+      .stats-bar {
+        flex: 1;
+        justify-content: space-around;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .tiles-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation & Live Pax Counter -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand">
+        <img
+          src="https://cdn-icons-png.magnific.com/256/12756/12756133.png?semt=ais_white_label"
+          alt="Head Count Logo"
+          class="brand-logo"
+        />
+        <div class="brand-info">
+          <div class="brand-title-row">
+            <span class="brand-title">Head Count</span>
+            <span class="version-badge">v1.0</span>
+          </div>
+          <span class="brand-subtitle">Universal Wedding &amp; Event Guest Counter</span>
+        </div>
+      </div>
+
+      <div class="header-controls">
+        <div class="stats-bar" aria-label="Guest Summary">
+          <div class="stat-item">
+            <i data-lucide="layers"></i>
+            <span class="stat-label">Groups:</span>
+            <span class="stat-value" id="totalGroupsCount">0</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <i data-lucide="users"></i>
+            <span class="stat-label">Total Pax:</span>
+            <span class="stat-value" id="totalPaxCount">0</span>
+          </div>
+        </div>
+
+        <button type="button" class="btn btn-excel" id="exportExcelBtn" title="Download formatted Excel sheet">
+          <i data-lucide="file-spreadsheet"></i>
+          <span>Export Excel</span>
+        </button>
+
+        <button type="button" class="btn btn-primary" id="openNewGroupModalBtn">
+          <i data-lucide="user-plus"></i>
+          <span>New Group</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Workspace -->
+  <main class="main-container">
+    <!-- Event Header Details (Synced with Excel Export Header) -->
+    <section class="event-header-card" aria-label="Event Details">
+      <div class="event-meta-fields">
+        <div class="meta-input-group">
+          <i data-lucide="bookmark"></i>
+          <input
+            type="text"
+            id="eventTitleInput"
+            class="meta-input"
+            placeholder="Event Title (e.g., Wedding Guest List)"
+            value="Wedding Guest List"
+          />
+        </div>
+        <div class="meta-input-group">
+          <i data-lucide="calendar"></i>
+          <input
+            type="text"
+            id="eventDateInput"
+            class="meta-input"
+            placeholder="Event Date / Venue"
+          />
+        </div>
+        <div class="meta-input-group">
+          <i data-lucide="user-check"></i>
+          <input
+            type="text"
+            id="eventHostInput"
+            class="meta-input"
+            placeholder="Host / Family Side"
+          />
+        </div>
+      </div>
+    </section>
+
+    <!-- Search & Quick Controls -->
+    <div class="toolbar">
+      <div class="search-box">
+        <i data-lucide="search"></i>
+        <input
+          type="text"
+          id="searchInput"
+          class="search-input"
+          placeholder="Search any guest or group..."
+          autocomplete="off"
+        />
+      </div>
+
+      <div class="toolbar-actions">
+        <button type="button" class="btn btn-danger-outline" id="deleteAllGroupsBtn" style="display: none;">
+          <i data-lucide="trash-2"></i>
+          <span>Delete All</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Compact Group Tiles Grid -->
+    <div id="tilesGrid" class="tiles-grid"></div>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="empty-state" style="display: none;">
+      <div class="empty-icon-wrap">
+        <i data-lucide="users"></i>
+      </div>
+      <h2 class="empty-title" id="emptyStateTitle">No guest groups yet</h2>
+      <p class="empty-desc" id="emptyStateDesc">
+        Create your first group tile by adding a primary guest and any accompanying family members or plus-ones.
+      </p>
+      <button type="button" class="btn btn-primary" id="emptyAddBtn">
+        <i data-lucide="plus"></i>
+        <span>Add First Group</span>
+      </button>
+    </div>
+  </main>
+
+  <!-- Modal 1: Add New Group -->
+  <div class="modal-backdrop" id="newGroupModal" role="dialog" aria-modal="true" aria-labelledby="newGroupModalTitle">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <i data-lucide="folder-plus" style="width: 20px; height: 20px; color: var(--accent-blue);"></i>
+          <div>
+            <h3 class="modal-title" id="newGroupModalTitle">Create New Guest Group</h3>
+            <p class="modal-subtitle">First member becomes the primary tile name on the main screen</p>
+          </div>
+        </div>
+        <button type="button" class="btn-icon" data-close-modal="newGroupModal" aria-label="Close">
+          <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+        </button>
+      </div>
+
+      <form id="newGroupForm">
+        <div class="modal-body">
+          <div class="form-grid">
+            <div class="form-group full">
+              <label class="form-label" for="newPrimaryName">Primary Guest Name (Group Head) *</label>
+              <input
+                type="text"
+                id="newPrimaryName"
+                class="form-control"
+                placeholder="e.g., Mr. XYZ"
+                required
+                autocomplete="off"
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="newPrimaryRelation">Relation / Category</label>
+              <input
+                type="text"
+                id="newPrimaryRelation"
+                class="form-control"
+                placeholder="e.g., Family, Groom Side, VIP"
+                autocomplete="off"
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="newPrimaryPhone">Phone / Contact</label>
+              <input
+                type="text"
+                id="newPrimaryPhone"
+                class="form-control"
+                placeholder="Optional"
+                autocomplete="off"
+              />
+            </div>
+
+            <div class="form-group full">
+              <label class="form-label" for="newAdditionalGuests">
+                Accompanying Guests (Optional — comma or new-line separated)
+              </label>
+              <textarea
+                id="newAdditionalGuests"
+                class="form-control"
+                rows="3"
+                placeholder="e.g., Mr. ABC, Mr. DEF"
+              ></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close-modal="newGroupModal">Cancel</button>
+          <button type="submit" class="btn btn-primary">
+            <i data-lucide="check"></i>
+            <span>Create Group Tile</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 2: Group Details, Sorting, Editing & Member Management -->
+  <div class="modal-backdrop" id="groupDetailModal" role="dialog" aria-modal="true" aria-labelledby="detailModalTitle">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <i data-lucide="users" style="width: 20px; height: 20px; color: var(--accent-blue);"></i>
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <h3 class="modal-title" id="detailModalTitle">Group Name</h3>
+              <span class="pax-pill plus" id="detailModalPaxBadge">+0</span>
+            </div>
+            <p class="modal-subtitle" id="detailModalSubtitle">Total 1 member in this group</p>
+          </div>
+        </div>
+        <button type="button" class="btn-icon" data-close-modal="groupDetailModal" aria-label="Close">
+          <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="drag-hint">
+          <i data-lucide="arrow-up-down"></i>
+          <span>Drag or use arrows to reorder. The top member (#1) automatically becomes the Group Name &amp; main tile title.</span>
+        </div>
+
+        <!-- Draggable Member List -->
+        <div id="memberList" class="member-list"></div>
+
+        <!-- Add or Edit Member Form -->
+        <div class="member-form-box">
+          <div class="form-section-title" id="memberFormHeader">
+            <i data-lucide="user-plus"></i>
+            <span id="memberFormTitleText">Add Guest to Group</span>
+          </div>
+
+          <form id="memberForm">
+            <input type="hidden" id="editingMemberId" value="" />
+            <div class="form-grid">
+              <div class="form-group full">
+                <label class="form-label" for="memberNameInput">Guest Full Name *</label>
+                <input
+                  type="text"
+                  id="memberNameInput"
+                  class="form-control"
+                  placeholder="Enter guest name"
+                  required
+                  autocomplete="off"
+                />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="memberRelationInput">Relation / Note</label>
+                <input
+                  type="text"
+                  id="memberRelationInput"
+                  class="form-control"
+                  placeholder="e.g., Spouse, Child, Friend"
+                  autocomplete="off"
+                />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="memberPhoneInput">Phone / Contact</label>
+                <input
+                  type="text"
+                  id="memberPhoneInput"
+                  class="form-control"
+                  placeholder="Optional"
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+
+            <div class="form-actions-row">
+              <button type="button" class="btn btn-secondary" id="cancelEditMemberBtn" style="display: none;">
+                Cancel Edit
+              </button>
+              <button type="submit" class="btn btn-primary" id="saveMemberBtn">
+                <i data-lucide="plus"></i>
+                <span id="saveMemberBtnText">Add Guest</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger-outline" id="deleteGroupTriggerBtn">
+          <i data-lucide="trash-2"></i>
+          <span>Delete Group</span>
+        </button>
+
+        <button type="button" class="btn btn-primary" data-close-modal="groupDetailModal">
+          <i data-lucide="check"></i>
+          <span>Done</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: Confirmation Dialog (For Delete Group & Delete All) -->
+  <div class="modal-backdrop" id="confirmModal" role="dialog" aria-modal="true" aria-labelledby="confirmModalTitle">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <i data-lucide="alert-triangle" style="width: 20px; height: 20px; color: var(--danger);"></i>
+          <h3 class="modal-title" id="confirmModalTitle">Confirm Deletion</h3>
+        </div>
+        <button type="button" class="btn-icon" data-close-modal="confirmModal" aria-label="Close">
+          <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <p id="confirmModalMessage" style="font-size: 0.875rem; color: var(--text-secondary); line-height: 1.55;">
+          Are you sure you want to delete this group?
+        </p>
+      </div>
+
+      <div class="modal-footer" style="justify-content: flex-end;">
+        <button type="button" class="btn btn-secondary" data-close-modal="confirmModal">Cancel</button>
+        <button type="button" class="btn btn-danger" id="confirmActionBtn">
+          <i data-lucide="trash-2"></i>
+          <span id="confirmActionBtnText">Delete</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      const STORAGE_KEY = 'headcount_v1_data';
+
+      // Application State
+      let state = {
+        meta: {
+          title: 'Wedding Guest List',
+          date: '',
+          host: ''
+        },
+        groups: []
+      };
+
+      let activeGroupId = null;
+      let pendingConfirmAction = null;
+      let draggedMemberIndex = null;
+
+      // DOM References
+      const els = {
+        totalGroupsCount: document.getElementById('totalGroupsCount'),
+        totalPaxCount: document.getElementById('totalPaxCount'),
+        eventTitleInput: document.getElementById('eventTitleInput'),
+        eventDateInput: document.getElementById('eventDateInput'),
+        eventHostInput: document.getElementById('eventHostInput'),
+        searchInput: document.getElementById('searchInput'),
+        tilesGrid: document.getElementById('tilesGrid'),
+        emptyState: document.getElementById('emptyState'),
+        emptyStateTitle: document.getElementById('emptyStateTitle'),
+        emptyStateDesc: document.getElementById('emptyStateDesc'),
+        deleteAllGroupsBtn: document.getElementById('deleteAllGroupsBtn'),
+        exportExcelBtn: document.getElementById('exportExcelBtn'),
+        openNewGroupModalBtn: document.getElementById('openNewGroupModalBtn'),
+        emptyAddBtn: document.getElementById('emptyAddBtn'),
+        // New Group Modal
+        newGroupModal: document.getElementById('newGroupModal'),
+        newGroupForm: document.getElementById('newGroupForm'),
+        newPrimaryName: document.getElementById('newPrimaryName'),
+        newPrimaryRelation: document.getElementById('newPrimaryRelation'),
+        newPrimaryPhone: document.getElementById('newPrimaryPhone'),
+        newAdditionalGuests: document.getElementById('newAdditionalGuests'),
+        // Detail Modal
+        groupDetailModal: document.getElementById('groupDetailModal'),
+        detailModalTitle: document.getElementById('detailModalTitle'),
+        detailModalPaxBadge: document.getElementById('detailModalPaxBadge'),
+        detailModalSubtitle: document.getElementById('detailModalSubtitle'),
+        memberList: document.getElementById('memberList'),
+        memberForm: document.getElementById('memberForm'),
+        memberFormTitleText: document.getElementById('memberFormTitleText'),
+        editingMemberId: document.getElementById('editingMemberId'),
+        memberNameInput: document.getElementById('memberNameInput'),
+        memberRelationInput: document.getElementById('memberRelationInput'),
+        memberPhoneInput: document.getElementById('memberPhoneInput'),
+        cancelEditMemberBtn: document.getElementById('cancelEditMemberBtn'),
+        saveMemberBtnText: document.getElementById('saveMemberBtnText'),
+        deleteGroupTriggerBtn: document.getElementById('deleteGroupTriggerBtn'),
+        // Confirm Modal
+        confirmModal: document.getElementById('confirmModal'),
+        confirmModalTitle: document.getElementById('confirmModalTitle'),
+        confirmModalMessage: document.getElementById('confirmModalMessage'),
+        confirmActionBtn: document.getElementById('confirmActionBtn'),
+        confirmActionBtnText: document.getElementById('confirmActionBtnText'),
+        // Toast
+        toastContainer: document.getElementById('toastContainer')
+      };
+
+      // Generate Unique ID
+      function uid(prefix = 'id') {
+        return `${prefix}_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 7)}`;
+      }
+
+      // Load & Save State
+      function loadState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (parsed && Array.isArray(parsed.groups)) {
+              state = {
+                meta: {
+                  title: parsed.meta?.title || 'Wedding Guest List',
+                  date: parsed.meta?.date || '',
+                  host: parsed.meta?.host || ''
+                },
+                groups: parsed.groups
+              };
+            }
+          }
+        } catch (err) {
+          console.error('Failed to load state:', err);
+        }
+
+        els.eventTitleInput.value = state.meta.title;
+        els.eventDateInput.value = state.meta.date;
+        els.eventHostInput.value = state.meta.host;
+      }
+
+      function saveState() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        } catch (err) {
+          console.error('Failed to save state:', err);
+        }
+      }
+
+      // Toast Notification
+      function showToast(message) {
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.innerHTML = `<i data-lucide="check-circle-2"></i><span>${escapeHtml(message)}</span>`;
+        els.toastContainer.appendChild(toast);
+        lucide.createIcons({ root: toast });
+
+        setTimeout(() => {
+          toast.style.opacity = '0';
+          toast.style.transform = 'translateY(8px)';
+          toast.style.transition = 'all 200ms ease';
+          setTimeout(() => toast.remove(), 220);
+        }, 2400);
+      }
+
+      function escapeHtml(str) {
+        if (!str) return '';
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+
+      // Helper: Group Name is ALWAYS the 1st member's name
+      function getGroupDisplayName(group) {
+        if (!group || !group.members || group.members.length === 0) return 'Unnamed Group';
+        return group.members[0].name;
+      }
+
+      // Helper: Plus Count (+0, +1, +2)
+      function getPlusCount(group) {
+        if (!group || !group.members) return 0;
+        return Math.max(0, group.members.length - 1);
+      }
+
+      // Helper: Total Pax across all groups
+      function getTotalPax() {
+        return state.groups.reduce((sum, g) => sum + (g.members ? g.members.length : 0), 0);
+      }
+
+      // Render Main Page (Header Counts + Compact Tiles)
+      function renderMain() {
+        const totalGroups = state.groups.length;
+        const totalPax = getTotalPax();
+
+        els.totalGroupsCount.textContent = totalGroups;
+        els.totalPaxCount.textContent = totalPax;
+
+        els.deleteAllGroupsBtn.style.display = totalGroups > 0 ? 'inline-flex' : 'none';
+
+        const query = els.searchInput.value.trim().toLowerCase();
+        const filteredGroups = state.groups.filter((group) => {
+          if (!query) return true;
+          return group.members.some(
+            (m) =>
+              m.name.toLowerCase().includes(query) ||
+              (m.relation && m.relation.toLowerCase().includes(query)) ||
+              (m.phone && m.phone.toLowerCase().includes(query))
+          );
+        });
+
+        els.tilesGrid.innerHTML = '';
+
+        if (filteredGroups.length === 0) {
+          els.tilesGrid.style.display = 'none';
+          els.emptyState.style.display = 'block';
+          if (totalGroups > 0 && query) {
+            els.emptyStateTitle.textContent = 'No matching guests found';
+            els.emptyStateDesc.textContent = `No group or member matched "${els.searchInput.value}".`;
+            els.emptyAddBtn.style.display = 'none';
+          } else {
+            els.emptyStateTitle.textContent = 'No guest groups yet';
+            els.emptyStateDesc.textContent =
+              'Create your first group tile by adding a primary guest and any accompanying family members or plus-ones.';
+            els.emptyAddBtn.style.display = 'inline-flex';
+          }
+          return;
+        }
+
+        els.emptyState.style.display = 'none';
+        els.tilesGrid.style.display = 'grid';
+
+        filteredGroups.forEach((group) => {
+          const realIndex = state.groups.findIndex((g) => g.id === group.id);
+          const primaryName = getGroupDisplayName(group);
+          const plusCount = getPlusCount(group);
+
+          const tile = document.createElement('div');
+          tile.className = 'group-tile';
+          tile.setAttribute('role', 'button');
+          tile.setAttribute('tabindex', '0');
+          tile.setAttribute('aria-label', `${primaryName} plus ${plusCount} guests`);
+
+          tile.innerHTML = `
+            <div class="tile-left">
+              <span class="tile-index">${realIndex + 1}</span>
+              <span class="tile-primary-name" title="${escapeHtml(primaryName)}">${escapeHtml(primaryName)}</span>
+            </div>
+            <div class="tile-right">
+              <span class="pax-pill ${plusCount === 0 ? 'zero' : 'plus'}">+${plusCount}</span>
+              <i data-lucide="chevron-right" class="tile-chevron"></i>
+            </div>
+          `;
+
+          tile.addEventListener('click', () => openGroupDetail(group.id));
+          tile.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              openGroupDetail(group.id);
+            }
+          });
+
+          els.tilesGrid.appendChild(tile);
+        });
+
+        lucide.createIcons({ root: els.tilesGrid });
+      }
+
+      // Modal Helpers
+      function openModal(modalEl) {
+        modalEl.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeModal(modalEl) {
+        modalEl.classList.remove('open');
+        const anyOpen = document.querySelectorAll('.modal-backdrop.open').length > 0;
+        if (!anyOpen) {
+          document.body.style.overflow = '';
+        }
+      }
+
+      document.querySelectorAll('[data-close-modal]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const targetId = btn.getAttribute('data-close-modal');
+          const modal = document.getElementById(targetId);
+          if (modal) closeModal(modal);
+        });
+      });
+
+      document.querySelectorAll('.modal-backdrop').forEach((backdrop) => {
+        backdrop.addEventListener('click', (e) => {
+          if (e.target === backdrop) {
+            closeModal(backdrop);
+          }
+        });
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          const openModals = Array.from(document.querySelectorAll('.modal-backdrop.open'));
+          if (openModals.length > 0) {
+            closeModal(openModals[openModals.length - 1]);
+          }
+        }
+      });
+
+      // Open New Group Modal
+      function triggerNewGroupModal() {
+        els.newGroupForm.reset();
+        openModal(els.newGroupModal);
+        setTimeout(() => els.newPrimaryName.focus(), 80);
+      }
+
+      els.openNewGroupModalBtn.addEventListener('click', triggerNewGroupModal);
+      els.emptyAddBtn.addEventListener('click', triggerNewGroupModal);
+
+      // Handle Create New Group
+      els.newGroupForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const primaryName = els.newPrimaryName.value.trim();
+        if (!primaryName) return;
+
+        const relation = els.newPrimaryRelation.value.trim();
+        const phone = els.newPrimaryPhone.value.trim();
+        const extraRaw = els.newAdditionalGuests.value;
+
+        const members = [
+          {
+            id: uid('mem'),
+            name: primaryName,
+            relation: relation,
+            phone: phone
+          }
+        ];
+
+        if (extraRaw.trim()) {
+          const extras = extraRaw
+            .split(/[\n,]+/)
+            .map((s) => s.trim())
+            .filter(Boolean);
+
+          extras.forEach((guestName) => {
+            members.push({
+              id: uid('mem'),
+              name: guestName,
+              relation: '',
+              phone: ''
+            });
+          });
+        }
+
+        state.groups.push({
+          id: uid('grp'),
+          members
+        });
+
+        saveState();
+        renderMain();
+        closeModal(els.newGroupModal);
+        showToast(`Added "${primaryName}" (+${members.length - 1})`);
+      });
+
+      // Open Group Detail Modal
+      function openGroupDetail(groupId) {
+        activeGroupId = groupId;
+        resetMemberForm();
+        renderGroupDetailModal();
+        openModal(els.groupDetailModal);
+      }
+
+      // Render Group Detail Modal (Syncs Header, Member Order, and Main Tile)
+      function renderGroupDetailModal() {
+        const group = state.groups.find((g) => g.id === activeGroupId);
+        if (!group) {
+          closeModal(els.groupDetailModal);
+          return;
+        }
+
+        const primaryName = getGroupDisplayName(group);
+        const plusCount = getPlusCount(group);
+        const totalInGroup = group.members.length;
+
+        els.detailModalTitle.textContent = primaryName;
+        els.detailModalPaxBadge.textContent = `+${plusCount}`;
+        els.detailModalPaxBadge.className = `pax-pill ${plusCount === 0 ? 'zero' : 'plus'}`;
+        els.detailModalSubtitle.textContent = `Group Head: ${primaryName} • Total ${totalInGroup} ${
+          totalInGroup === 1 ? 'person' : 'people'
+        }`;
+
+        els.memberList.innerHTML = '';
+
+        group.members.forEach((member, idx) => {
+          const isHead = idx === 0;
+          const row = document.createElement('div');
+          row.className = `member-row ${isHead ? 'is-head' : ''}`;
+          row.setAttribute('draggable', 'true');
+          row.dataset.index = idx;
+
+          const subParts = [];
+          if (member.relation) subParts.push(escapeHtml(member.relation));
+          if (member.phone) subParts.push(escapeHtml(member.phone));
+
+          row.innerHTML = `
+            <div class="drag-handle" title="Drag to reorder">
+              <i data-lucide="grip-vertical"></i>
+            </div>
+            <span class="member-rank">${idx + 1}</span>
+            <div class="member-info">
+              <div class="member-name-line">
+                <span class="member-name">${escapeHtml(member.name)}</span>
+                ${isHead ? '<span class="head-badge">Primary / Tile Head</span>' : ''}
+              </div>
+              ${subParts.length > 0 ? `<div class="member-sub">${subParts.join(' • ')}</div>` : ''}
+            </div>
+            <div class="member-actions">
+              <div class="reorder-arrows">
+                <button type="button" class="btn-arrow" data-move="up" title="Move up" ${
+                  idx === 0 ? 'disabled' : ''
+                }>
+                  <i data-lucide="chevron-up"></i>
+                </button>
+                <button type="button" class="btn-arrow" data-move="down" title="Move down" ${
+                  idx === group.members.length - 1 ? 'disabled' : ''
+                }>
+                  <i data-lucide="chevron-down"></i>
+                </button>
+              </div>
+              <button type="button" class="btn-icon" data-action="edit" title="Edit guest">
+                <i data-lucide="pencil" style="width: 15px; height: 15px;"></i>
+              </button>
+              <button type="button" class="btn-icon danger" data-action="delete" title="Remove guest">
+                <i data-lucide="trash-2" style="width: 15px; height: 15px;"></i>
+              </button>
+            </div>
+          `;
+
+          // Arrow Button Reordering
+          row.querySelector('[data-move="up"]').addEventListener('click', () => moveMember(idx, idx - 1));
+          row.querySelector('[data-move="down"]').addEventListener('click', () => moveMember(idx, idx + 1));
+
+          // Edit Guest
+          row.querySelector('[data-action="edit"]').addEventListener('click', () => startEditMember(member));
+
+          // Delete Guest
+          row.querySelector('[data-action="delete"]').addEventListener('click', () => removeMember(member.id));
+
+          // HTML5 Drag & Drop Events
+          row.addEventListener('dragstart', (e) => {
+            draggedMemberIndex = idx;
+            row.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', String(idx));
+          });
+
+          row.addEventListener('dragend', () => {
+            draggedMemberIndex = null;
+            row.classList.remove('dragging');
+            document.querySelectorAll('.member-row').forEach((r) => r.classList.remove('drag-over'));
+          });
+
+          row.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            if (draggedMemberIndex !== null && draggedMemberIndex !== idx) {
+              row.classList.add('drag-over');
+            }
+          });
+
+          row.addEventListener('dragleave', () => {
+            row.classList.remove('drag-over');
+          });
+
+          row.addEventListener('drop', (e) => {
+            e.preventDefault();
+            row.classList.remove('drag-over');
+            if (draggedMemberIndex !== null && draggedMemberIndex !== idx) {
+              moveMember(draggedMemberIndex, idx);
+            }
+          });
+
+          els.memberList.appendChild(row);
+        });
+
+        lucide.createIcons({ root: els.memberList });
+      }
+
+      // Move / Reorder Member inside Group
+      function moveMember(fromIndex, toIndex) {
+        const group = state.groups.find((g) => g.id === activeGroupId);
+        if (!group) return;
+        if (toIndex < 0 || toIndex >= group.members.length || fromIndex === toIndex) return;
+
+        const oldHeadName = getGroupDisplayName(group);
+        const [moved] = group.members.splice(fromIndex, 1);
+        group.members.splice(toIndex, 0, moved);
+        const newHeadName = getGroupDisplayName(group);
+
+        saveState();
+        renderGroupDetailModal();
+        renderMain();
+
+        if (oldHeadName !== newHeadName) {
+          showToast(`Group head updated to "${newHeadName}"`);
+        }
+      }
+
+      // Add or Edit Member inside Group
+      function startEditMember(member) {
+        els.editingMemberId.value = member.id;
+        els.memberNameInput.value = member.name;
+        els.memberRelationInput.value = member.relation || '';
+        els.memberPhoneInput.value = member.phone || '';
+        els.memberFormTitleText.textContent = `Edit Guest: ${member.name}`;
+        els.saveMemberBtnText.textContent = 'Save Changes';
+        els.cancelEditMemberBtn.style.display = 'inline-flex';
+        els.memberNameInput.focus();
+      }
+
+      function resetMemberForm() {
+        els.editingMemberId.value = '';
+        els.memberForm.reset();
+        els.memberFormTitleText.textContent = 'Add Guest to Group';
+        els.saveMemberBtnText.textContent = 'Add Guest';
+        els.cancelEditMemberBtn.style.display = 'none';
+      }
+
+      els.cancelEditMemberBtn.addEventListener('click', resetMemberForm);
+
+      els.memberForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const group = state.groups.find((g) => g.id === activeGroupId);
+        if (!group) return;
+
+        const name = els.memberNameInput.value.trim();
+        if (!name) return;
+
+        const relation = els.memberRelationInput.value.trim();
+        const phone = els.memberPhoneInput.value.trim();
+        const editingId = els.editingMemberId.value;
+
+        if (editingId) {
+          const member = group.members.find((m) => m.id === editingId);
+          if (member) {
+            member.name = name;
+            member.relation = relation;
+            member.phone = phone;
+            showToast(`Updated "${name}"`);
+          }
+        } else {
+          group.members.push({
+            id: uid('mem'),
+            name,
+            relation,
+            phone
+          });
+          showToast(`Added "${name}" to group`);
+        }
+
+        resetMemberForm();
+        saveState();
+        renderGroupDetailModal();
+        renderMain();
+      });
+
+      // Remove Member from Group
+      function removeMember(memberId) {
+        const group = state.groups.find((g) => g.id === activeGroupId);
+        if (!group) return;
+
+        if (group.members.length <= 1) {
+          // Removing the last member deletes the whole group with confirmation
+          promptConfirmation(
+            'Delete Entire Group?',
+            `Removing the last guest "${group.members[0].name}" will delete this entire group tile. Continue?`,
+            'Delete Group',
+            () => {
+              deleteGroupById(group.id);
+              closeModal(els.groupDetailModal);
+            }
+          );
+          return;
+        }
+
+        const removed = group.members.find((m) => m.id === memberId);
+        group.members = group.members.filter((m) => m.id !== memberId);
+
+        if (els.editingMemberId.value === memberId) {
+          resetMemberForm();
+        }
+
+        saveState();
+        renderGroupDetailModal();
+        renderMain();
+        if (removed) showToast(`Removed "${removed.name}"`);
+      }
+
+      // Delete Single Group (Triggered from Group Detail Modal)
+      els.deleteGroupTriggerBtn.addEventListener('click', () => {
+        const group = state.groups.find((g) => g.id === activeGroupId);
+        if (!group) return;
+
+        const groupName = getGroupDisplayName(group);
+        const total = group.members.length;
+
+        promptConfirmation(
+          'Delete Group Tile?',
+          `Are you sure you want to delete "${groupName}" and all ${total} ${
+            total === 1 ? 'guest' : 'guests'
+          } inside this group? This cannot be undone.`,
+          'Delete Group',
+          () => {
+            deleteGroupById(group.id);
+            closeModal(els.groupDetailModal);
+          }
+        );
+      });
+
+      function deleteGroupById(groupId) {
+        const target = state.groups.find((g) => g.id === groupId);
+        const name = target ? getGroupDisplayName(target) : 'Group';
+        state.groups = state.groups.filter((g) => g.id !== groupId);
+        saveState();
+        renderMain();
+        showToast(`Deleted "${name}"`);
+      }
+
+      // Delete All Groups with Confirmation
+      els.deleteAllGroupsBtn.addEventListener('click', () => {
+        const totalGroups = state.groups.length;
+        const totalPax = getTotalPax();
+        if (totalGroups === 0) return;
+
+        promptConfirmation(
+          'Delete All Guest Groups?',
+          `This will permanently delete all ${totalGroups} groups (${totalPax} total guests) from Head Count. Are you sure?`,
+          'Delete All',
+          () => {
+            state.groups = [];
+            saveState();
+            renderMain();
+            showToast('All guest groups deleted');
+          }
+        );
+      });
+
+      // Reusable Confirmation Modal
+      function promptConfirmation(title, message, actionLabel, onConfirm) {
+        els.confirmModalTitle.textContent = title;
+        els.confirmModalMessage.textContent = message;
+        els.confirmActionBtnText.textContent = actionLabel;
+        pendingConfirmAction = onConfirm;
+        openModal(els.confirmModal);
+      }
+
+      els.confirmActionBtn.addEventListener('click', () => {
+        if (typeof pendingConfirmAction === 'function') {
+          pendingConfirmAction();
+          pendingConfirmAction = null;
+        }
+        closeModal(els.confirmModal);
+      });
+
+      // Sync Event Metadata Inputs
+      [els.eventTitleInput, els.eventDateInput, els.eventHostInput].forEach((input) => {
+        input.addEventListener('input', () => {
+          state.meta.title = els.eventTitleInput.value.trim() || 'Wedding Guest List';
+          state.meta.date = els.eventDateInput.value.trim();
+          state.meta.host = els.eventHostInput.value.trim();
+          saveState();
+        });
+      });
+
+      // Search Input
+      els.searchInput.addEventListener('input', renderMain);
+
+      // Excel Export (.xlsx)
+      // Format requirement:
+      // - Top of Excel sheet: Total Pax and all event details in header
+      // - Group-wise sections
+      // - 1 row gap between groups
+      // - Guest header row & guests listed below each group
+      els.exportExcelBtn.addEventListener('click', () => {
+        if (state.groups.length === 0) {
+          showToast('Add at least one guest group before exporting');
+          return;
+        }
+
+        if (typeof XLSX === 'undefined') {
+          showToast('Excel library is still loading. Please try again.');
+          return;
+        }
+
+        const totalPax = getTotalPax();
+        const totalGroups = state.groups.length;
+        const eventTitle = state.meta.title || 'Wedding Guest List';
+        const eventDate = state.meta.date || 'Not Specified';
+        const eventHost = state.meta.host || 'Not Specified';
+        const exportedOn = new Date().toLocaleDateString('en-GB', {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric'
+        });
+
+        const rows = [];
+
+        // Top Summary & Event Header Block
+        rows.push([eventTitle.toUpperCase(), '', '', '', '']);
+        rows.push(['TOTAL PAX', totalPax, 'TOTAL GROUPS', totalGroups, '']);
+        rows.push(['EVENT DATE / VENUE', eventDate, 'HOST / SIDE', eventHost, `Exported: ${exportedOn}`]);
+        rows.push([]); // 1 blank row after top header block
+
+        // Group-Wise Sections with 1 Row Gap
+        state.groups.forEach((group, gIdx) => {
+          const groupHead = getGroupDisplayName(group);
+          const plusCount = getPlusCount(group);
+          const groupTotal = group.members.length;
+
+          // Group Title Banner Row
+          rows.push([
+            `GROUP ${gIdx + 1}: ${groupHead} (+${plusCount})`,
+            '',
+            '',
+            'Group Pax:',
+            groupTotal
+          ]);
+
+          // Guest Table Header Row
+          rows.push(['Sr. No.', 'Guest Name', 'Role', 'Relation / Note', 'Phone / Contact']);
+
+          // Guest Rows below Header
+          group.members.forEach((member, mIdx) => {
+            rows.push([
+              mIdx + 1,
+              member.name,
+              mIdx === 0 ? 'Group Head (Primary)' : 'Accompanying Guest',
+              member.relation || '-',
+              member.phone || '-'
+            ]);
+          });
+
+          // 1 Row Gap after each group
+          rows.push([]);
+        });
+
+        const worksheet = XLSX.utils.aoa_to_sheet(rows);
+
+        // Set clean column widths for readability
+        worksheet['!cols'] = [
+          { wch: 16 },
+          { wch: 30 },
+          { wch: 22 },
+          { wch: 24 },
+          { wch: 20 }
+        ];
+
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Guest List');
+
+        const safeFileName = eventTitle
+          .replace(/[^a-z0-9]/gi, '_')
+          .replace(/_+/g, '_')
+          .replace(/^_|_$/g, '');
+
+        XLSX.writeFile(workbook, `${safeFileName || 'Head_Count'}_Guest_List.xlsx`);
+        showToast('Excel guest list downloaded');
+      });
+
+      // Initialize App
+      loadState();
+      renderMain();
+      lucide.createIcons();
+    })();
+  </script>
+</body>
+</html>
